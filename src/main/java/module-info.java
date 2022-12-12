@@ -1,8 +1,8 @@
-module com.example.energie {
+module energie {
   requires javafx.controls;
   requires javafx.fxml;
 
 
-  opens com.example.energie to javafx.fxml;
-  exports com.example.energie;
+  opens energie to javafx.fxml;
+  exports energie;
 }
