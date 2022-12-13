@@ -1,6 +1,5 @@
 package energie.screens;
 
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -11,20 +10,17 @@ import javafx.stage.Stage;
 
 public class Home {
 
-  private final Stage stage;
-  private final Scene homeScene;
+  private Stage stage;
+  private Scene homeScene;
 
   public Home(Stage primaryStage) {
+
     stage = primaryStage;
 
     BorderPane border = new BorderPane();
     border.setCenter(addGridPane());
 
     homeScene = new Scene(border);
-  }
-
-  public Scene getHomeScene() {
-    return homeScene;
   }
 
   public GridPane addGridPane() {
@@ -48,5 +44,9 @@ public class Home {
     grid.add(btnRegister, 0, 6);
 
     return grid;
+  }
+
+  public Scene getHomeScene() {
+    return homeScene;
   }
 }
