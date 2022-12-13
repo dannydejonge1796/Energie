@@ -7,15 +7,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class Home {
 
+  private final Stage stage;
   private final Scene homeScene;
 
-  public Home() {
+  public Home(Stage primaryStage) {
+    stage = primaryStage;
 
     BorderPane border = new BorderPane();
-
     border.setCenter(addGridPane());
 
     homeScene = new Scene(border);
@@ -25,7 +27,8 @@ public class Home {
     return homeScene;
   }
 
-  public Node addGridPane() {
+  public GridPane addGridPane() {
+
     GridPane grid = new GridPane();
 
     Text txtCustomerNr = new Text("Voer uw klantnummer in:");
@@ -41,6 +44,7 @@ public class Home {
     grid.add(txtExistingCustomer, 0, 4);
 
     Button btnRegister = new Button("Registreren");
+    btnRegister.setOnAction(e -> stage.setScene(new Register(stage).getRegisterScene()));
     grid.add(btnRegister, 0, 6);
 
     return grid;

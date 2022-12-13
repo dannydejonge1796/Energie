@@ -4,16 +4,15 @@ import energie.screens.Home;
 import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {
-  public static int[] applicationSize = {1200, 650};
   @Override
-  public void start(Stage stage) {
-    stage.setWidth(applicationSize[0]);
-    stage.setHeight(applicationSize[1]);
-    stage.setResizable(false);
-    stage.setTitle("Energie");
+  public void start(Stage primaryStage) {
+    primaryStage.setWidth(1280);
+    primaryStage.setHeight(650);
+    primaryStage.setResizable(false);
+    primaryStage.setTitle("Energie");
 
-    stage.setScene(new Home().getHomeScene());
-    stage.show();
+    primaryStage.setScene(new Home(primaryStage).getHomeScene());
+    primaryStage.show();
   }
 
   public static void main(String[] args) {
