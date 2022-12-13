@@ -22,12 +22,12 @@ public class Home {
     primaryStage.setResizable(false);
     primaryStage.setTitle("Energie - klantnummer invoeren");
 
-    stage = primaryStage;
+    this.stage = primaryStage;
 
     BorderPane border = new BorderPane();
     border.setCenter(addGridPane());
 
-    homeScene = new Scene(border,1280, 720);
+    this.homeScene = new Scene(border,1280, 720);
   }
 
   public GridPane addGridPane() {

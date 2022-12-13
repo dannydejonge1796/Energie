@@ -22,12 +22,12 @@ public class Register {
 
     primaryStage.setTitle("Energie - registreren");
 
-    stage = primaryStage;
+    this.stage = primaryStage;
 
     BorderPane border = new BorderPane();
     border.setCenter(addGridPane());
 
-    registerScene = new Scene(border,1280, 720);
+    this.registerScene = new Scene(border,1280, 720);
   }
 
   public GridPane addGridPane() {
