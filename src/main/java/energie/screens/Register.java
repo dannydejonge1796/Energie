@@ -1,9 +1,12 @@
 package energie.screens;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -15,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class Register {
 
@@ -62,15 +66,6 @@ public class Register {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
-    // Klantnummer label toevoegen
-    Label lblCustomerNr = new Label("Klantnummer:");
-    grid.add(lblCustomerNr,0,1);
-
-    // Klantnummer textfield toevoegen
-    TextField tfCustomerNr = new TextField();
-    tfCustomerNr.setPrefHeight(40);
-    grid.add(tfCustomerNr, 1,1);
-
     // Voornaam label toevoegen
     Label lblFirstname = new Label("Voornaam:");
     grid.add(lblFirstname,0,2);
@@ -98,6 +93,7 @@ public class Register {
     tfAdvance.setPrefHeight(40);
     grid.add(tfAdvance,1,4);
 
+    // Voeg submit knop toe
     Button btnRegister = new Button("Registreer");
     btnRegister.setPrefHeight(40);
     btnRegister.setPrefWidth(100);
@@ -105,9 +101,60 @@ public class Register {
     GridPane.setHalignment(btnRegister, HPos.RIGHT);
     GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
 
+    // Wanneer op knop wordt gedrukt
+    btnRegister.setOnAction(e -> {
+
+      String firstname = tfFirstname.getText();
+      String lastname = tfLastname.getText();
+      String advance = tfAdvance.getText();
+
+      if(firstname.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw voornaam in!");
+        return;
+      }
+
+      if(!firstname.matches("[a-zA-Z]+")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "De ingevoerde voornaam is ongeldig!");
+        return;
+      }
+
+      if(lastname.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw achternaam in!");
+        return;
+      }
+
+      if(!lastname.matches("[a-zA-Z]+")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "De ingevoerde achternaam is ongeldig!");
+        return;
+      }
+
+      if(advance.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw jaarlijkse voorschot in!");
+        return;
+      }
+
+      if (!advance.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
+        return;
+      }
+
+
+
+
+
+    });
+
     return grid;
   }
-  
+
+  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.initOwner(owner);
+    alert.show();
+  }
 
   public Scene getRegisterScene() {
     return registerScene;
