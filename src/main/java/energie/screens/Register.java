@@ -108,7 +108,7 @@ public class Register {
       String lastname = tfLastname.getText();
       String advance = tfAdvance.getText();
 
-      if(firstname.isEmpty()) {
+      if(firstname.isEmpty()) { 
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw voornaam in!");
         return;
       }
