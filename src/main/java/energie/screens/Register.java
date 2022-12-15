@@ -118,7 +118,7 @@ public class Register {
         return;
       }
 
-      if(!firstname.matches("[a-zA-Z]+")) {
+      if(!firstname.matches("^[a-zA-Z\\s]*$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "De ingevoerde voornaam is ongeldig!");
         return;
       }
@@ -128,7 +128,7 @@ public class Register {
         return;
       }
 
-      if(!lastname.matches("[a-zA-Z]+")) {
+      if(!lastname.matches("^[a-zA-Z\\s]*$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "De ingevoerde achternaam is ongeldig!");
         return;
       }

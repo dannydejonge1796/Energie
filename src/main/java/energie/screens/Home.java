@@ -55,6 +55,9 @@ public class Home {
 
     btnCustomerNr.setOnAction(e -> {
       String customerNr = tfCustomerNr.getText();
+
+      //Validate
+
       if (cR.getCustomer(customerNr) != null) {
         Customer customer = cR.getCustomer(customerNr);
 
