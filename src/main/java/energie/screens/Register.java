@@ -22,8 +22,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.util.ArrayList;
+
 public class Register {
 
+  private Stage stage;
   private Scene registerScene;
   private CustomerRegister cR;
 
@@ -31,6 +34,7 @@ public class Register {
     this.cR = customerRegister;
 
     primaryStage.setTitle("Energie - registreren");
+    this.stage = primaryStage;
 
     BorderPane border = new BorderPane();
     border.setCenter(createRegFormPane());
@@ -141,6 +145,9 @@ public class Register {
 
       Customer customer = new Customer(firstname, lastname, Double.parseDouble(advance));
       cR.addCustomer(customer);
+
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd!");
+      stage.setScene(new Home(stage, cR).getHomeScene());
     });
 
     return grid;

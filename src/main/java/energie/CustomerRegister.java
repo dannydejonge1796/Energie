@@ -13,4 +13,8 @@ public class CustomerRegister {
   public void addCustomer(Customer customer) {
     customers.add(customer);
   }
+
+  public ArrayList<Customer> getCustomers() {
+    return customers;
+  }
 }
