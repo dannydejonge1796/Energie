@@ -146,7 +146,7 @@ public class Register {
       Customer customer = new Customer(firstname, lastname, Double.parseDouble(advance));
       cR.addCustomer(customer);
 
-      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd!");
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");
       stage.setScene(new Home(stage, cR).getHomeScene());
     });
 

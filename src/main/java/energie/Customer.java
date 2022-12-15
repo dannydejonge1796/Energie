@@ -15,10 +15,12 @@ public class Customer {
 
     Random rand = new Random();
     StringBuilder randomCustomerNr = new StringBuilder();
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
       int randomNumber = rand.nextInt(10);
       randomCustomerNr.append(randomNumber);
     }
+
+    System.out.println(randomCustomerNr);
 
     this.customerNr = randomCustomerNr.toString();
     this.firstname = firstname;

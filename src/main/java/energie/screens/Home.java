@@ -1,9 +1,11 @@
 package energie.screens;
 
+import energie.Customer;
 import energie.CustomerRegister;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -12,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class Home {
 
@@ -29,12 +32,12 @@ public class Home {
     this.stage = primaryStage;
 
     BorderPane border = new BorderPane();
-    border.setCenter(addGridPane());
+    border.setCenter(addHomePane());
 
     this.homeScene = new Scene(border,1280, 720);
   }
 
-  public GridPane addGridPane() {
+  public GridPane addHomePane() {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
@@ -49,6 +52,21 @@ public class Home {
     grid.add(tfCustomerNr, 0, 2);
 
     Button btnCustomerNr = new Button("Ok");
+
+    btnCustomerNr.setOnAction(e -> {
+      String customerNr = tfCustomerNr.getText();
+      if (cR.getCustomer(customerNr) != null) {
+        Customer customer = cR.getCustomer(customerNr);
+
+
+
+
+        showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "TEMPGelukt");
+      } else {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer bestaat niet!");
+      }
+    });
+
     grid.add(btnCustomerNr, 1, 2);
 
     Text txtExistingCustomer = new Text("Nog geen klant?");
@@ -60,6 +78,15 @@ public class Home {
     grid.add(btnRegister, 0, 6);
 
     return grid;
+  }
+
+  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.initOwner(owner);
+    alert.show();
   }
 
   public Scene getHomeScene() {

@@ -17,4 +17,14 @@ public class CustomerRegister {
   public ArrayList<Customer> getCustomers() {
     return customers;
   }
+
+  public Customer getCustomer(String customerNumber) {
+    for (Customer customer : this.customers) {
+      if (customer.getCustomerNr().equals(customerNumber)) {
+        return customer;
+      }
+    }
+
+    return null;
+  }
 }
