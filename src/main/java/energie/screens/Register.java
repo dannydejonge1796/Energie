@@ -107,7 +107,7 @@ public class Register {
     GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
 
     // Wanneer op knop wordt gedrukt
-    btnRegister.setOnAction(e -> {
+    btnRegister.setOnAction(e -> { 
 
       String firstname = tfFirstname.getText();
       String lastname = tfLastname.getText();
