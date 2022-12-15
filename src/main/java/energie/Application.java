@@ -6,7 +6,8 @@ import javafx.stage.Stage;
 public class Application extends javafx.application.Application {
   @Override
   public void start(Stage primaryStage) {
-    primaryStage.setScene(new Home(primaryStage).getHomeScene());
+    CustomerRegister cR = new CustomerRegister();
+    primaryStage.setScene(new Home(primaryStage, cR).getHomeScene());
     primaryStage.show();
   }
 

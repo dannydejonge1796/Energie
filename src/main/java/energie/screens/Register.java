@@ -1,5 +1,7 @@
 package energie.screens;
 
+import energie.Customer;
+import energie.CustomerRegister;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -22,14 +24,13 @@ import javafx.stage.Window;
 
 public class Register {
 
-  private Stage stage;
   private Scene registerScene;
+  private CustomerRegister cR;
 
-  public Register(Stage primaryStage) {
+  public Register(Stage primaryStage, CustomerRegister customerRegister) {
+    this.cR = customerRegister;
 
     primaryStage.setTitle("Energie - registreren");
-
-    this.stage = primaryStage;
 
     BorderPane border = new BorderPane();
     border.setCenter(createRegFormPane());
@@ -108,7 +109,7 @@ public class Register {
       String lastname = tfLastname.getText();
       String advance = tfAdvance.getText();
 
-      if(firstname.isEmpty()) { 
+      if(firstname.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw voornaam in!");
         return;
       }
@@ -138,10 +139,8 @@ public class Register {
         return;
       }
 
-
-
-
-
+      Customer customer = new Customer(firstname, lastname, Double.parseDouble(advance));
+      cR.addCustomer(customer);
     });
 
     return grid;

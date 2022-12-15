@@ -1,5 +1,6 @@
 package energie.screens;
 
+import energie.CustomerRegister;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,8 +17,11 @@ public class Home {
 
   private Stage stage;
   private Scene homeScene;
+  private CustomerRegister cR;
 
-  public Home(Stage primaryStage) {
+  public Home(Stage primaryStage, CustomerRegister customerRegister) {
+
+    this.cR = customerRegister;
 
     primaryStage.setResizable(false);
     primaryStage.setTitle("Energie - klantnummer invoeren");
@@ -52,7 +56,7 @@ public class Home {
     grid.add(txtExistingCustomer, 0, 4);
 
     Button btnRegister = new Button("Registreren");
-    btnRegister.setOnAction(e -> stage.setScene(new Register(stage).getRegisterScene()));
+    btnRegister.setOnAction(e -> stage.setScene(new Register(this.stage, this.cR).getRegisterScene()));
     grid.add(btnRegister, 0, 6);
 
     return grid;
