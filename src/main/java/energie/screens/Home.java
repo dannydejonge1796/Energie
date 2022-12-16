@@ -56,7 +56,15 @@ public class Home {
     btnCustomerNr.setOnAction(e -> {
       String customerNr = tfCustomerNr.getText();
 
-      //Validate
+      if(customerNr.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een klantnummer in!");
+        return;
+      }
+
+      if(!customerNr.matches("^[0-9]*$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer is ongeldig!");
+        return;
+      }
 
       if (cR.getCustomer(customerNr) != null) {
         Customer customer = cR.getCustomer(customerNr);
