@@ -68,11 +68,7 @@ public class Home {
 
       if (cR.getCustomer(customerNr) != null) {
         Customer customer = cR.getCustomer(customerNr);
-
-
-
-
-        showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "TEMPGelukt");
+        stage.setScene(new Dashboard(this.stage, customer).getDashboardScene());
       } else {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer bestaat niet!");
       }
