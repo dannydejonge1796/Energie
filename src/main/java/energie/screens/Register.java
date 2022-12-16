@@ -89,15 +89,6 @@ public class Register {
     tfLastname.setPrefHeight(40);
     grid.add(tfLastname,1,3);
 
-    // Jaarlijks voorschot label toevoegen
-    Label lblAdvance = new Label("Jaarlijks voorschot:");
-    grid.add(lblAdvance,0,4);
-
-    // Jaarlijks voorschot textfield toevoegen
-    TextField tfAdvance = new TextField();
-    tfAdvance.setPrefHeight(40);
-    grid.add(tfAdvance,1,4);
-
     // Voeg submit knop toe
     Button btnRegister = new Button("Registreer");
     btnRegister.setPrefHeight(40);
@@ -111,7 +102,6 @@ public class Register {
 
       String firstname = tfFirstname.getText();
       String lastname = tfLastname.getText();
-      String advance = tfAdvance.getText();
 
       if(firstname.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw voornaam in!");
@@ -133,17 +123,7 @@ public class Register {
         return;
       }
 
-      if(advance.isEmpty()) {
-        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw jaarlijkse voorschot in!");
-        return;
-      }
-
-      if (!advance.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
-        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
-        return;
-      }
-
-      Customer customer = new Customer(firstname, lastname, Double.parseDouble(advance));
+      Customer customer = new Customer(firstname, lastname);
       cR.addCustomer(customer);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");

@@ -10,7 +10,7 @@ public class Customer {
   private String lastname;
   private Double advance;
 
-  public Customer(String firstname, String lastname, Double advance) {
+  public Customer(String firstname, String lastname) {
 //    this.database = new Database("test");
 
     Random rand = new Random();
@@ -25,7 +25,7 @@ public class Customer {
     this.customerNr = randomCustomerNr.toString();
     this.firstname = firstname;
     this.lastname = lastname;
-    this.advance = advance;
+    this.advance = null;
   }
 
   public String getCustomerNr() {
