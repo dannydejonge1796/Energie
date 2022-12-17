@@ -12,6 +12,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Dashboard {
 
@@ -114,12 +118,49 @@ public class Dashboard {
     grid.add(dpDateEnd,1,4);
 
     // Voeg submit knop toe
-    Button btnRegister = new Button("Opslaan");
-    btnRegister.setPrefHeight(40);
-    btnRegister.setPrefWidth(100);
-    grid.add(btnRegister, 0, 5, 2, 1);
-    GridPane.setHalignment(btnRegister, HPos.RIGHT);
-    GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
+    Button btnSave = new Button("Opslaan");
+    btnSave.setPrefHeight(40);
+    btnSave.setPrefWidth(100);
+    grid.add(btnSave, 0, 5, 2, 1);
+    GridPane.setHalignment(btnSave, HPos.RIGHT);
+    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+
+    btnSave.setOnAction(e -> {
+
+      String usageElec = tfUsageElec.getText();
+      String usageGas = tfUsageGas.getText();
+      LocalDate dateStart = dpDateStart.getValue();
+      LocalDate dateEnd = dpDateEnd.getValue();
+
+      if(usageElec.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw stroomverbruik in!");
+        return;
+      }
+      if(!usageElec.matches("^[0-9]*$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde aantal is ongeldig!");
+        return;
+      }
+
+      if(usageGas.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw gasverbruik in!");
+        return;
+      }
+      if(!usageGas.matches("^[0-9]*$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde aantal is ongeldig!");
+        return;
+      }
+
+      if (dateStart == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de start datum in!");
+        return;
+      }
+
+      if(dateEnd == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de eind datum in!");
+        return;
+      }
+
+    });
 
     return grid;
   }
@@ -285,6 +326,15 @@ public class Dashboard {
     options[3].setOnAction(e -> {this.borderSettings.setCenter(addAdvancePane());});
 
     return vbox;
+  }
+
+  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.initOwner(owner);
+    alert.show();
   }
 
   public Scene getDashboardScene() {
