@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 public class Dashboard {
@@ -203,12 +204,39 @@ public class Dashboard {
     grid.add(dpKwhDateTo,1,4);
 
     // Voeg submit knop toe
-    Button btnRegister = new Button("Opslaan");
-    btnRegister.setPrefHeight(40);
-    btnRegister.setPrefWidth(100);
-    grid.add(btnRegister, 0, 5, 2, 1);
-    GridPane.setHalignment(btnRegister, HPos.RIGHT);
-    GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
+    Button btnSave = new Button("Opslaan");
+    btnSave.setPrefHeight(40);
+    btnSave.setPrefWidth(100);
+    grid.add(btnSave, 0, 5, 2, 1);
+    GridPane.setHalignment(btnSave, HPos.RIGHT);
+    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+
+    btnSave.setOnAction(e -> {
+
+      String costKwh = tfCostKwh.getText();
+      LocalDate kwhDateFrom = dpKwhDateFrom.getValue();
+      LocalDate kwhDateTo = dpKwhDateTo.getValue();
+
+      if (costKwh.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw huidige stroomtarief in!");
+        return;
+      }
+
+      if (!costKwh.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
+        return;
+      }
+
+      if (kwhDateFrom == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de ingangsdatum van het stroomtarief in!");
+        return;
+      }
+
+      if (kwhDateTo == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het stroomtarief in!");
+        return;
+      }
+    });
 
     return grid;
   }
@@ -251,12 +279,40 @@ public class Dashboard {
     grid.add(dpGasDateTo,1,4);
 
     // Voeg submit knop toe
-    Button btnRegister = new Button("Opslaan");
-    btnRegister.setPrefHeight(40);
-    btnRegister.setPrefWidth(100);
-    grid.add(btnRegister, 0, 5, 2, 1);
-    GridPane.setHalignment(btnRegister, HPos.RIGHT);
-    GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
+    Button btnSave = new Button("Opslaan");
+    btnSave.setPrefHeight(40);
+    btnSave.setPrefWidth(100);
+    grid.add(btnSave, 0, 5, 2, 1);
+    GridPane.setHalignment(btnSave, HPos.RIGHT);
+    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+
+    btnSave.setOnAction(e -> {
+
+      String costGas = tfCostGas.getText();
+      LocalDate gasDateFrom = dpGasDateFrom.getValue();
+      LocalDate gasDateTo = dpGasDateTo.getValue();
+
+      if (costGas.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw huidige gastarief in!");
+        return;
+      }
+
+      if (!costGas.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
+        return;
+      }
+
+      if (gasDateFrom == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de ingangsdatum van het gastarief in!");
+        return;
+      }
+
+      if (gasDateTo == null) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het gastarief in!");
+        return;
+      }
+
+    });
 
     return grid;
   }
@@ -290,12 +346,28 @@ public class Dashboard {
     grid.add(tfAdvance,1,1);
 
     // Voeg submit knop toe
-    Button btnRegister = new Button("Opslaan");
-    btnRegister.setPrefHeight(40);
-    btnRegister.setPrefWidth(100);
-    grid.add(btnRegister, 0, 5, 2, 1);
-    GridPane.setHalignment(btnRegister, HPos.RIGHT);
-    GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
+    Button btnSave = new Button("Opslaan");
+    btnSave.setPrefHeight(40);
+    btnSave.setPrefWidth(100);
+    grid.add(btnSave, 0, 5, 2, 1);
+    GridPane.setHalignment(btnSave, HPos.RIGHT);
+    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+
+    btnSave.setOnAction(e -> {
+
+      String advance = tfAdvance.getText();
+
+      if (advance.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw jaarlijkse voorschot in!");
+        return;
+      }
+
+      if (!advance.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
+        return;
+      }
+
+    });
 
     return grid;
   }
