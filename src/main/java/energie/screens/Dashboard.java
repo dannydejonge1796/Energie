@@ -1,7 +1,6 @@
 package energie.screens;
 
-import energie.Customer;
-import energie.CustomerRegister;
+import energie.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,27 +13,36 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 public class Dashboard {
 
   private Customer customer;
   private Scene dashboardScene;
   private BorderPane borderSettings;
+  private ArrayList<GasRate> gasRates;
+  private ArrayList<ElectricityRate> electricityRates;
+  private ArrayList<WeeklyUsage> weeklyUsages;
 
   public Dashboard(Stage primaryStage, Customer customer) {
     this.customer = customer;
     primaryStage.setTitle("Energie - Welkom " + this.customer.getFirstname() + "!");
 
     BorderPane borderDash = new BorderPane();
+    BorderPane borderSettings = new BorderPane();
+
     borderDash.setCenter(addDashboardPane());
 
-    BorderPane borderSettings = new BorderPane();
     this.borderSettings = borderSettings;
     this.borderSettings.setLeft(addVBox());
     this.borderSettings.setCenter(addUsagePane());
+    this.gasRates = new ArrayList<>();
+    this.electricityRates = new ArrayList<>();
+    this.weeklyUsages = new ArrayList<>();
 
     TabPane tabPane = new TabPane();
 
@@ -161,12 +169,16 @@ public class Dashboard {
         return;
       }
 
+      WeeklyUsage weeklyUsage = new WeeklyUsage(Double.parseDouble(usageElec), Double.parseDouble(usageGas), dateStart, dateEnd);
+      weeklyUsages.add(weeklyUsage);
+
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
     });
 
     return grid;
   }
 
-  public GridPane addCostElecPane() {
+  public GridPane addElecRatePane() {
 // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
     // Gridpane in het midden van het scherm positioneren
@@ -185,23 +197,23 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
-    Label lblCostKwh = new Label("Tarief stroom:");
-    grid.add(lblCostKwh,0,2);
-    TextField tfCostKwh = new TextField();
-    tfCostKwh.setPrefHeight(40);
-    grid.add(tfCostKwh,1,2);
+    Label lblRate = new Label("Tarief stroom:");
+    grid.add(lblRate,0,2);
+    TextField tfRate = new TextField();
+    tfRate.setPrefHeight(40);
+    grid.add(tfRate,1,2);
 
-    Label lblKwhDateFrom = new Label("Datum vanaf:");
-    grid.add(lblKwhDateFrom,0,3);
-    DatePicker dpKwhDateFrom = new DatePicker();
-    dpKwhDateFrom.setPrefHeight(40);
-    grid.add(dpKwhDateFrom,1,3);
+    Label lblDateFrom = new Label("Datum vanaf:");
+    grid.add(lblDateFrom,0,3);
+    DatePicker dpDateFrom = new DatePicker();
+    dpDateFrom.setPrefHeight(40);
+    grid.add(dpDateFrom,1,3);
 
-    Label lblKwhDateTo = new Label("Datum tot:");
-    grid.add(lblKwhDateTo,0,4);
-    DatePicker dpKwhDateTo = new DatePicker();
-    dpKwhDateTo.setPrefHeight(40);
-    grid.add(dpKwhDateTo,1,4);
+    Label lblDateTo = new Label("Datum tot:");
+    grid.add(lblDateTo,0,4);
+    DatePicker dpDateTo = new DatePicker();
+    dpDateTo.setPrefHeight(40);
+    grid.add(dpDateTo,1,4);
 
     // Voeg submit knop toe
     Button btnSave = new Button("Opslaan");
@@ -213,35 +225,40 @@ public class Dashboard {
 
     btnSave.setOnAction(e -> {
 
-      String costKwh = tfCostKwh.getText();
-      LocalDate kwhDateFrom = dpKwhDateFrom.getValue();
-      LocalDate kwhDateTo = dpKwhDateTo.getValue();
+      String rate = tfRate.getText();
+      LocalDate dateFrom = dpDateFrom.getValue();
+      LocalDate dateTo = dpDateTo.getValue();
 
-      if (costKwh.isEmpty()) {
+      if (rate.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw huidige stroomtarief in!");
         return;
       }
 
-      if (!costKwh.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+      if (!rate.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
         return;
       }
 
-      if (kwhDateFrom == null) {
+      if (dateFrom == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de ingangsdatum van het stroomtarief in!");
         return;
       }
 
-      if (kwhDateTo == null) {
+      if (dateTo == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het stroomtarief in!");
         return;
       }
+
+      ElectricityRate electricityRate = new ElectricityRate(Double.parseDouble(rate), dateFrom, dateTo);
+      electricityRates.add(electricityRate);
+
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
     });
 
     return grid;
   }
 
-  public GridPane addCostGasPane() {
+  public GridPane addGasRatePane() {
 // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
     // Gridpane in het midden van het scherm positioneren
@@ -260,23 +277,23 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
-    Label lblCostGas = new Label("Tarief gas:");
-    grid.add(lblCostGas,0,2);
-    TextField tfCostGas = new TextField();
-    tfCostGas.setPrefHeight(40);
-    grid.add(tfCostGas,1,2);
+    Label lblRate = new Label("Tarief gas:");
+    grid.add(lblRate,0,2);
+    TextField tfRate = new TextField();
+    tfRate.setPrefHeight(40);
+    grid.add(tfRate,1,2);
 
-    Label lblGasDateFrom = new Label("Datum vanaf:");
-    grid.add(lblGasDateFrom,0,3);
-    DatePicker dpGasDateFrom = new DatePicker();
-    dpGasDateFrom.setPrefHeight(40);
-    grid.add(dpGasDateFrom,1,3);
+    Label lblDateFrom = new Label("Datum vanaf:");
+    grid.add(lblDateFrom,0,3);
+    DatePicker dpDateFrom = new DatePicker();
+    dpDateFrom.setPrefHeight(40);
+    grid.add(dpDateFrom,1,3);
 
-    Label lblGasDateTo = new Label("Datum tot:");
-    grid.add(lblGasDateTo,0,4);
-    DatePicker dpGasDateTo = new DatePicker();
-    dpGasDateTo.setPrefHeight(40);
-    grid.add(dpGasDateTo,1,4);
+    Label lblDateTo = new Label("Datum tot:");
+    grid.add(lblDateTo,0,4);
+    DatePicker dpDateTo = new DatePicker();
+    dpDateTo.setPrefHeight(40);
+    grid.add(dpDateTo,1,4);
 
     // Voeg submit knop toe
     Button btnSave = new Button("Opslaan");
@@ -288,30 +305,34 @@ public class Dashboard {
 
     btnSave.setOnAction(e -> {
 
-      String costGas = tfCostGas.getText();
-      LocalDate gasDateFrom = dpGasDateFrom.getValue();
-      LocalDate gasDateTo = dpGasDateTo.getValue();
+      String rate = tfRate.getText();
+      LocalDate dateFrom = dpDateFrom.getValue();
+      LocalDate dateTo = dpDateTo.getValue();
 
-      if (costGas.isEmpty()) {
+      if (rate.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw huidige gastarief in!");
         return;
       }
 
-      if (!costGas.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+      if (!rate.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
         return;
       }
 
-      if (gasDateFrom == null) {
+      if (dateFrom == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de ingangsdatum van het gastarief in!");
         return;
       }
 
-      if (gasDateTo == null) {
+      if (dateTo == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het gastarief in!");
         return;
       }
 
+      GasRate gasRate = new GasRate(Double.parseDouble(rate), dateFrom, dateTo);
+      gasRates.add(gasRate);
+
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");
     });
 
     return grid;
@@ -367,6 +388,9 @@ public class Dashboard {
         return;
       }
 
+      this.customer.setAdvance(Double.parseDouble(advance));
+
+      showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw jaarlijkse voorschot is ingesteld!");
     });
 
     return grid;
@@ -393,8 +417,8 @@ public class Dashboard {
     }
 
     options[0].setOnAction(e -> {this.borderSettings.setCenter(addUsagePane());});
-    options[1].setOnAction(e -> {this.borderSettings.setCenter(addCostElecPane());});
-    options[2].setOnAction(e -> {this.borderSettings.setCenter(addCostGasPane());});
+    options[1].setOnAction(e -> {this.borderSettings.setCenter(addElecRatePane());});
+    options[2].setOnAction(e -> {this.borderSettings.setCenter(addGasRatePane());});
     options[3].setOnAction(e -> {this.borderSettings.setCenter(addAdvancePane());});
 
     return vbox;

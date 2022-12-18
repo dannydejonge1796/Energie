@@ -43,4 +43,8 @@ public class Customer {
   public Double getAdvance() {
     return advance;
   }
+
+  public void setAdvance(Double advance) {
+    this.advance = advance;
+  }
 }
