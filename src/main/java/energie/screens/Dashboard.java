@@ -24,9 +24,6 @@ public class Dashboard {
   private Customer customer;
   private Scene dashboardScene;
   private BorderPane borderSettings;
-  private ArrayList<GasRate> gasRates;
-  private ArrayList<ElectricityRate> electricityRates;
-  private ArrayList<WeeklyUsage> weeklyUsages;
 
   public Dashboard(Stage primaryStage, Customer customer) {
     this.customer = customer;
@@ -40,9 +37,6 @@ public class Dashboard {
     this.borderSettings = borderSettings;
     this.borderSettings.setLeft(addVBox());
     this.borderSettings.setCenter(addUsagePane());
-    this.gasRates = new ArrayList<>();
-    this.electricityRates = new ArrayList<>();
-    this.weeklyUsages = new ArrayList<>();
 
     TabPane tabPane = new TabPane();
 
@@ -170,7 +164,7 @@ public class Dashboard {
       }
 
       WeeklyUsage weeklyUsage = new WeeklyUsage(Double.parseDouble(usageElec), Double.parseDouble(usageGas), dateStart, dateEnd);
-      weeklyUsages.add(weeklyUsage);
+      customer.addToWeeklyUsages(weeklyUsage);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
     });
@@ -250,7 +244,7 @@ public class Dashboard {
       }
 
       ElectricityRate electricityRate = new ElectricityRate(Double.parseDouble(rate), dateFrom, dateTo);
-      electricityRates.add(electricityRate);
+      customer.addToElectricityRates(electricityRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
     });
@@ -330,7 +324,7 @@ public class Dashboard {
       }
 
       GasRate gasRate = new GasRate(Double.parseDouble(rate), dateFrom, dateTo);
-      gasRates.add(gasRate);
+      customer.addToGasRates(gasRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");
     });
@@ -362,7 +356,17 @@ public class Dashboard {
     grid.add(lblAdvance,0,1);
 
     // Jaarlijks voorschot textfield toevoegen
-    TextField tfAdvance = new TextField();
+
+    TextField tfAdvance;
+
+    Double txtAdvance = customer.getAdvance();
+
+    if (txtAdvance == null) {
+      tfAdvance = new TextField();
+    } else {
+      tfAdvance = new TextField(txtAdvance.toString());
+    }
+
     tfAdvance.setPrefHeight(40);
     grid.add(tfAdvance,1,1);
 
