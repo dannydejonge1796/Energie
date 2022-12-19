@@ -39,7 +39,7 @@ public class Register {
     BorderPane border = new BorderPane();
     border.setCenter(createRegFormPane());
 
-    this.registerScene = new Scene(border,1280, 720);
+    this.registerScene = new Scene(border,640, 360);
   }
 
   public GridPane createRegFormPane() {

@@ -34,7 +34,7 @@ public class Home {
     BorderPane border = new BorderPane();
     border.setCenter(addHomePane());
 
-    this.homeScene = new Scene(border,1280, 720);
+    this.homeScene = new Scene(border,640, 360);
   }
 
   public GridPane addHomePane() {

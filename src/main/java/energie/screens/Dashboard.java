@@ -56,7 +56,7 @@ public class Dashboard {
 
     tabPane.getTabs().addAll(tab1, tab2);
 
-    this.dashboardScene = new Scene(tabPane,1280, 720);
+    this.dashboardScene = new Scene(tabPane,640, 360);
   }
 
   public GridPane addDashboardPane() {
