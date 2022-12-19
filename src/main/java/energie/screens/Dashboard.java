@@ -25,9 +25,14 @@ public class Dashboard {
   private Scene dashboardScene;
   private BorderPane borderSettings;
   private Integer notificationCount;
+  private Stage stage;
+  private Integer selectedTab;
 
-  public Dashboard(Stage primaryStage, Customer customer) {
+  public Dashboard(Stage primaryStage, Customer customer, Integer selectedTab) {
+    this.stage = primaryStage;
     this.customer = customer;
+    this.selectedTab = selectedTab;
+
     primaryStage.setTitle("Energie - Welkom " + this.customer.getFirstname() + "!");
 
     BorderPane borderDash = new BorderPane();
@@ -60,6 +65,9 @@ public class Dashboard {
     tab2.setContent(borderSettings);
 
     tabPane.getTabs().addAll(tab1, tab2);
+
+    SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+    selectionModel.select(this.selectedTab);
 
     this.dashboardScene = new Scene(tabPane,640, 360);
   }
@@ -178,6 +186,7 @@ public class Dashboard {
       customer.addToWeeklyUsages(weeklyUsage);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
+      stage.setScene(new Dashboard(stage, customer, 1).getDashboardScene());
     });
 
     return grid;
@@ -258,6 +267,7 @@ public class Dashboard {
       customer.addToElectricityRates(electricityRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
+      stage.setScene(new Dashboard(stage, customer, 1).getDashboardScene());
     });
 
     return grid;
@@ -338,6 +348,7 @@ public class Dashboard {
       customer.addToGasRates(gasRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");
+      stage.setScene(new Dashboard(stage, customer, 1).getDashboardScene());
     });
 
     return grid;
@@ -406,6 +417,7 @@ public class Dashboard {
       this.customer.setAdvance(Double.parseDouble(advance));
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw jaarlijkse voorschot is ingesteld!");
+      stage.setScene(new Dashboard(stage, customer, 1).getDashboardScene());
     });
 
     return grid;
