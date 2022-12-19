@@ -24,6 +24,7 @@ public class Dashboard {
   private Customer customer;
   private Scene dashboardScene;
   private BorderPane borderSettings;
+  private Integer notificationCount;
 
   public Dashboard(Stage primaryStage, Customer customer) {
     this.customer = customer;
@@ -45,7 +46,17 @@ public class Dashboard {
     tab1.setContent(borderDash);
 
     Tab tab2 = new Tab();
-    tab2.setText("Instellingen");
+
+    this.notificationCount = getNotifications();
+
+    if (this.notificationCount == 0) {
+      tab2.setText("Instellingen");
+    } else {
+      tab2.setText("Instellingen (" + this.notificationCount + ")");
+    }
+
+    this.notificationCount = 3;
+
     tab2.setContent(borderSettings);
 
     tabPane.getTabs().addAll(tab1, tab2);
@@ -439,5 +450,28 @@ public class Dashboard {
 
   public Scene getDashboardScene() {
     return dashboardScene;
+  }
+
+  public Integer getNotifications() {
+
+    Integer notificationCount = 0;
+
+    if (customer.getAdvance() == null) {
+      notificationCount = notificationCount + 1;
+    }
+
+    if (customer.getElectricityRates().isEmpty()) {
+      notificationCount = notificationCount + 1;
+    }
+
+    if (customer.getGasRates().isEmpty()) {
+      notificationCount = notificationCount + 1;
+    }
+
+    if (customer.getWeeklyUsages().isEmpty()) {
+      notificationCount = notificationCount + 1;
+    }
+
+    return notificationCount;
   }
 }
