@@ -15,4 +15,20 @@ public class WeeklyUsage {
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
   }
+
+  public Double getUsageElec() {
+    return usageElec;
+  }
+
+  public Double getUsageGas() {
+    return usageGas;
+  }
+
+  public LocalDate getDateStart() {
+    return dateStart;
+  }
+
+  public LocalDate getDateEnd() {
+    return dateEnd;
+  }
 }

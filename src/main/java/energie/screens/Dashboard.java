@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -396,7 +397,8 @@ public class Dashboard {
     if (txtAdvance == null) {
       tfAdvance = new TextField();
     } else {
-      tfAdvance = new TextField(txtAdvance.toString());
+      DecimalFormat df = new DecimalFormat("#.00");
+      tfAdvance = new TextField(df.format(txtAdvance));
     }
 
     tfAdvance.setPrefHeight(40);
@@ -476,22 +478,51 @@ public class Dashboard {
 
   public Integer getNotifications() {
 
+    LocalDate now = LocalDate.now();
+
     Integer notificationCount = 0;
 
     if (customer.getAdvance() == null) {
       notificationCount = notificationCount + 1;
     }
 
-    if (customer.getElectricityRates().isEmpty()) {
+    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
+
+    if (electricityRates.isEmpty()) {
       notificationCount = notificationCount + 1;
+    } else {
+      int lastIdx = electricityRates.size() - 1;
+      ElectricityRate latestElecRate = electricityRates.get(lastIdx);
+      LocalDate dateTo = latestElecRate.getDateTo();
+      if (dateTo.isBefore(now)) {
+        notificationCount = notificationCount + 1;
+      }
     }
+
+    ArrayList<GasRate> gasRates = customer.getGasRates();
 
     if (customer.getGasRates().isEmpty()) {
       notificationCount = notificationCount + 1;
+    } else {
+      int lastIdx = gasRates.size() - 1;
+      GasRate latestGasRate = gasRates.get(lastIdx);
+      LocalDate dateTo = latestGasRate.getDateTo();
+      if (dateTo.isBefore(now)) {
+        notificationCount = notificationCount + 1;
+      }
     }
+
+    ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
 
     if (customer.getWeeklyUsages().isEmpty()) {
       notificationCount = notificationCount + 1;
+    } else {
+      int lastIdx = weeklyUsages.size() - 1;
+      WeeklyUsage weeklyUsage = weeklyUsages.get(lastIdx);
+      LocalDate dateEnd = weeklyUsage.getDateEnd();
+      if (dateEnd.isBefore(now)) {
+        notificationCount = notificationCount + 1;
+      }
     }
 
     return notificationCount;

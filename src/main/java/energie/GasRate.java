@@ -13,4 +13,16 @@ public class GasRate {
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
   }
+
+  public Double getRate() {
+    return rate;
+  }
+
+  public LocalDate getDateFrom() {
+    return dateFrom;
+  }
+
+  public LocalDate getDateTo() {
+    return dateTo;
+  }
 }
