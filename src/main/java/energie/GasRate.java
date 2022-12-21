@@ -4,9 +4,9 @@ import java.time.LocalDate;
 
 public class GasRate {
 
-  Double rate;
-  LocalDate dateFrom;
-  LocalDate dateTo;
+  private Double rate;
+  private LocalDate dateFrom;
+  private LocalDate dateTo;
 
   public GasRate(Double rate, LocalDate dateFrom, LocalDate dateTo) {
     this.rate = rate;
@@ -24,5 +24,17 @@ public class GasRate {
 
   public LocalDate getDateTo() {
     return dateTo;
+  }
+
+  public void setRate(Double rate) {
+    this.rate = rate;
+  }
+
+  public void setDateFrom(LocalDate dateFrom) {
+    this.dateFrom = dateFrom;
+  }
+
+  public void setDateTo(LocalDate dateTo) {
+    this.dateTo = dateTo;
   }
 }

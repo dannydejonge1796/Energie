@@ -78,4 +78,28 @@ public class Customer {
   public void addToWeeklyUsages(WeeklyUsage weeklyUsage) {
     this.weeklyUsages.add(weeklyUsage);
   }
+
+  public void setCustomerNr(String customerNr) {
+    this.customerNr = customerNr;
+  }
+
+  public void setFirstname(String firstname) {
+    this.firstname = firstname;
+  }
+
+  public void setLastname(String lastname) {
+    this.lastname = lastname;
+  }
+
+  public void setElectricityRates(ArrayList<ElectricityRate> electricityRates) {
+    this.electricityRates = electricityRates;
+  }
+
+  public void setGasRates(ArrayList<GasRate> gasRates) {
+    this.gasRates = gasRates;
+  }
+
+  public void setWeeklyUsages(ArrayList<WeeklyUsage> weeklyUsages) {
+    this.weeklyUsages = weeklyUsages;
+  }
 }

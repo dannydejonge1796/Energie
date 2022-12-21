@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -79,6 +80,8 @@ public class Dashboard {
     if (this.selectedTab == 1) {
       this.borderSettings.setCenter(settingCenterPane);
     }
+
+    tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
     this.dashboardScene = new Scene(tabPane,640, 360);
   }
@@ -204,7 +207,7 @@ public class Dashboard {
   }
 
   public GridPane addElecRatePane() {
-// Nieuwe gridpane aanmaken
+    // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
     // Gridpane in het midden van het scherm positioneren
     grid.setAlignment(Pos.CENTER);
@@ -386,7 +389,7 @@ public class Dashboard {
 
     // Jaarlijks voorschot label toevoegen
     Label lblAdvance = new Label("Jaarlijks voorschot:");
-    grid.add(lblAdvance,0,1);
+    grid.add(lblAdvance,0,2);
 
     // Jaarlijks voorschot textfield toevoegen
 
@@ -402,7 +405,7 @@ public class Dashboard {
     }
 
     tfAdvance.setPrefHeight(40);
-    grid.add(tfAdvance,1,1);
+    grid.add(tfAdvance,1,2);
 
     // Voeg submit knop toe
     Button btnSave = new Button("Opslaan");
@@ -414,19 +417,19 @@ public class Dashboard {
 
     btnSave.setOnAction(e -> {
 
-      String advance = tfAdvance.getText();
+      String strAdvance = tfAdvance.getText();
 
-      if (advance.isEmpty()) {
+      if (strAdvance.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw jaarlijkse voorschot in!");
         return;
       }
 
-      if (!advance.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
+      if (!strAdvance.matches("^[0-9]*(\\.[0-9]{0,2})?$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een geldig bedrag in!");
         return;
       }
 
-      this.customer.setAdvance(Double.parseDouble(advance));
+      this.customer.setAdvance(Double.parseDouble(strAdvance));
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw jaarlijkse voorschot is ingesteld!");
       stage.setScene(new Dashboard(stage, customer, 1, "advance").getDashboardScene());
@@ -482,12 +485,12 @@ public class Dashboard {
 
     Integer notificationCount = 0;
 
-    if (customer.getAdvance() == null) {
+    Double advance = customer.getAdvance();
+    if (advance == null) {
       notificationCount = notificationCount + 1;
     }
 
     ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
-
     if (electricityRates.isEmpty()) {
       notificationCount = notificationCount + 1;
     } else {
@@ -500,7 +503,6 @@ public class Dashboard {
     }
 
     ArrayList<GasRate> gasRates = customer.getGasRates();
-
     if (customer.getGasRates().isEmpty()) {
       notificationCount = notificationCount + 1;
     } else {
@@ -513,7 +515,6 @@ public class Dashboard {
     }
 
     ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
-
     if (customer.getWeeklyUsages().isEmpty()) {
       notificationCount = notificationCount + 1;
     } else {
