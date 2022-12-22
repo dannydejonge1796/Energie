@@ -26,7 +26,7 @@ public class Dashboard {
   private Customer customer;
   private Scene dashboardScene;
   private BorderPane borderSettings;
-  private Integer notificationCount;
+  private ArrayList<Notification> notifications;
   private Stage stage;
   private Integer selectedTab;
 
@@ -34,6 +34,7 @@ public class Dashboard {
     this.stage = primaryStage;
     this.customer = customer;
     this.selectedTab = selectedTab;
+    this.notifications = new ArrayList<>();
 
     GridPane settingCenterPane = new GridPane();
     switch (settingCenterPaneIdx) {
@@ -62,12 +63,12 @@ public class Dashboard {
 
     Tab tab2 = new Tab();
 
-    this.notificationCount = getNotifications();
+    determineNotifications();
 
-    if (this.notificationCount == 0) {
+    if (this.notifications.size() == 0) {
       tab2.setText("Instellingen");
     } else {
-      tab2.setText("Instellingen (" + this.notificationCount + ")");
+      tab2.setText("Instellingen (" + this.notifications.size() + ")");
     }
 
     tab2.setContent(borderSettings);
@@ -479,53 +480,63 @@ public class Dashboard {
     return dashboardScene;
   }
 
-  public Integer getNotifications() {
+  public void determineNotifications() {
 
     LocalDate now = LocalDate.now();
 
-    Integer notificationCount = 0;
-
     Double advance = customer.getAdvance();
     if (advance == null) {
-      notificationCount = notificationCount + 1;
+      String txtNotification = "U heeft nog geen jaarlijks voorschot ingevoerd!";
+      Notification notification = new Notification(txtNotification);
+      notifications.add(notification);
     }
 
     ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
     if (electricityRates.isEmpty()) {
-      notificationCount = notificationCount + 1;
+      String txtNotification = "U heeft nog geen stroomtarief ingevoerd!";
+      Notification notification = new Notification(txtNotification);
+      notifications.add(notification);
     } else {
       int lastIdx = electricityRates.size() - 1;
       ElectricityRate latestElecRate = electricityRates.get(lastIdx);
       LocalDate dateTo = latestElecRate.getDateTo();
       if (dateTo.isBefore(now)) {
-        notificationCount = notificationCount + 1;
+        String txtNotification = "De einddatum van uw stroomtarief is verlopen!";
+        Notification notification = new Notification(txtNotification);
+        notifications.add(notification);
       }
     }
 
     ArrayList<GasRate> gasRates = customer.getGasRates();
     if (customer.getGasRates().isEmpty()) {
-      notificationCount = notificationCount + 1;
+      String txtNotification = "U heeft nog geen gastarief ingevoerd!";
+      Notification notification = new Notification(txtNotification);
+      notifications.add(notification);
     } else {
       int lastIdx = gasRates.size() - 1;
       GasRate latestGasRate = gasRates.get(lastIdx);
       LocalDate dateTo = latestGasRate.getDateTo();
       if (dateTo.isBefore(now)) {
-        notificationCount = notificationCount + 1;
+        String txtNotification = "De einddatum van uw gastarief is verlopen!";
+        Notification notification = new Notification(txtNotification);
+        notifications.add(notification);
       }
     }
 
     ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
     if (customer.getWeeklyUsages().isEmpty()) {
-      notificationCount = notificationCount + 1;
+      String txtNotification = "U heeft deze week nog geen wekelijks verbruik ingevoerd!";
+      Notification notification = new Notification(txtNotification);
+      notifications.add(notification);
     } else {
       int lastIdx = weeklyUsages.size() - 1;
       WeeklyUsage weeklyUsage = weeklyUsages.get(lastIdx);
       LocalDate dateEnd = weeklyUsage.getDateEnd();
       if (dateEnd.isBefore(now)) {
-        notificationCount = notificationCount + 1;
+        String txtNotification = "U heeft deze week nog geen wekelijks verbruik ingevoerd!";
+        Notification notification = new Notification(txtNotification);
+        notifications.add(notification);
       }
     }
-
-    return notificationCount;
   }
 }
