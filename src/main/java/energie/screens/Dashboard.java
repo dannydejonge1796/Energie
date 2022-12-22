@@ -13,7 +13,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -31,10 +30,16 @@ public class Dashboard {
   private Integer selectedTab;
 
   public Dashboard(Stage primaryStage, Customer customer, Integer selectedTab, String settingCenterPaneIdx) {
+
     this.stage = primaryStage;
     this.customer = customer;
+
+    primaryStage.setTitle("Energie - Welkom " + this.customer.getFirstname() + "!");
+
     this.selectedTab = selectedTab;
     this.notifications = new ArrayList<>();
+
+    determineNotifications();
 
     GridPane settingCenterPane = new GridPane();
     switch (settingCenterPaneIdx) {
@@ -43,8 +48,6 @@ public class Dashboard {
       case "gasRate" -> settingCenterPane = addGasRatePane();
       case "advance" -> settingCenterPane = addAdvancePane();
     }
-
-    primaryStage.setTitle("Energie - Welkom " + this.customer.getFirstname() + "!");
 
     BorderPane borderDash = new BorderPane();
     BorderPane borderSettings = new BorderPane();
@@ -62,8 +65,6 @@ public class Dashboard {
     tab1.setContent(borderDash);
 
     Tab tab2 = new Tab();
-
-    determineNotifications();
 
     if (this.notifications.size() == 0) {
       tab2.setText("Instellingen");
@@ -106,7 +107,21 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
+    Label ntfctnHdrLabel = new Label("Notificaties");
+    ntfctnHdrLabel.setFont(Font.font("Arial", FontWeight.MEDIUM, 18));
+    grid.add(ntfctnHdrLabel, 0,1,2,1);
+    GridPane.setHalignment(ntfctnHdrLabel, HPos.LEFT);
 
+    int count = 2;
+    for (Notification notification : this.notifications) {
+      Text ntfctnTxt = new Text(notification.getTxtNotification());
+
+      ntfctnTxt.setFont(Font.font("Arial", FontWeight.MEDIUM, 12));
+      ntfctnTxt.setStyle("-fx-text-fill: red");
+      grid.add(ntfctnTxt, 0, count,2,1);
+      GridPane.setHalignment(ntfctnTxt, HPos.LEFT);
+      count++;
+    }
 
     return grid;
   }
@@ -130,27 +145,41 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
+    ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
+    int latestIdx = weeklyUsages.size() - 1;
+    WeeklyUsage latestWeeklyUsage = latestIdx >= 0 ? weeklyUsages.get(latestIdx) : null;
+
     Label lblUsageElec = new Label("Stroomverbruik:");
     grid.add(lblUsageElec,0,1);
-    TextField tfUsageElec = new TextField();
+    TextField tfUsageElec = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageElec().toString() : "");
     tfUsageElec.setPrefHeight(40);
     grid.add(tfUsageElec,1,1);
 
     Label lblUsageGas = new Label("Gasverbruik:");
     grid.add(lblUsageGas,0,2);
-    TextField tfUsageGas = new TextField();
+    TextField tfUsageGas = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageGas().toString() : "");
     tfUsageGas.setPrefHeight(40);
     grid.add(tfUsageGas,1,2);
 
     Label lblDateStart = new Label("Startdatum:");
     grid.add(lblDateStart,0,3);
-    DatePicker dpDateStart = new DatePicker();
+    DatePicker dpDateStart;
+    if (latestWeeklyUsage != null) {
+      dpDateStart = new DatePicker(latestWeeklyUsage.getDateStart());
+    } else {
+      dpDateStart = new DatePicker();
+    }
     dpDateStart.setPrefHeight(40);
     grid.add(dpDateStart,1,3);
 
     Label lblDateEnd = new Label("Einddatum:");
     grid.add(lblDateEnd,0,4);
-    DatePicker dpDateEnd = new DatePicker();
+    DatePicker dpDateEnd;
+    if (latestWeeklyUsage != null) {
+      dpDateEnd = new DatePicker(latestWeeklyUsage.getDateEnd());
+    } else {
+      dpDateEnd = new DatePicker();
+    }
     dpDateEnd.setPrefHeight(40);
     grid.add(dpDateEnd,1,4);
 
@@ -197,7 +226,7 @@ public class Dashboard {
         return;
       }
 
-      WeeklyUsage weeklyUsage = new WeeklyUsage(Double.parseDouble(usageElec), Double.parseDouble(usageGas), dateStart, dateEnd);
+      WeeklyUsage weeklyUsage = new WeeklyUsage(Integer.parseInt(usageElec), Integer.parseInt(usageGas), dateStart, dateEnd);
       customer.addToWeeklyUsages(weeklyUsage);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
@@ -226,21 +255,36 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
+    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
+    int latestIdx = electricityRates.size() - 1;
+    ElectricityRate latestElecRate = latestIdx >= 0 ? electricityRates.get(latestIdx) : null;
+
     Label lblRate = new Label("Tarief stroom:");
     grid.add(lblRate,0,2);
-    TextField tfRate = new TextField();
+    DecimalFormat df = new DecimalFormat("#.00");
+    TextField tfRate = new TextField(latestElecRate != null ? df.format(latestElecRate.getRate()) : "");
     tfRate.setPrefHeight(40);
     grid.add(tfRate,1,2);
 
     Label lblDateFrom = new Label("Datum vanaf:");
     grid.add(lblDateFrom,0,3);
-    DatePicker dpDateFrom = new DatePicker();
+    DatePicker dpDateFrom;
+    if (latestElecRate != null) {
+      dpDateFrom = new DatePicker(latestElecRate.getDateFrom());
+    } else {
+      dpDateFrom = new DatePicker();
+    }
     dpDateFrom.setPrefHeight(40);
     grid.add(dpDateFrom,1,3);
 
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo,0,4);
-    DatePicker dpDateTo = new DatePicker();
+    DatePicker dpDateTo;
+    if (latestElecRate != null) {
+      dpDateTo = new DatePicker(latestElecRate.getDateTo());
+    } else {
+      dpDateTo = new DatePicker();
+    }
     dpDateTo.setPrefHeight(40);
     grid.add(dpDateTo,1,4);
 
@@ -307,21 +351,36 @@ public class Dashboard {
     GridPane.setHalignment(headerLabel, HPos.CENTER);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
+    ArrayList<GasRate> gasRates = customer.getGasRates();
+    int latestIdx = gasRates.size() - 1;
+    GasRate latestGasRate = latestIdx >= 0 ? gasRates.get(latestIdx) : null;
+
     Label lblRate = new Label("Tarief gas:");
     grid.add(lblRate,0,2);
-    TextField tfRate = new TextField();
+    DecimalFormat df = new DecimalFormat("#.00");
+    TextField tfRate = new TextField(latestGasRate != null ? df.format(latestGasRate.getRate()) : "");
     tfRate.setPrefHeight(40);
     grid.add(tfRate,1,2);
 
     Label lblDateFrom = new Label("Datum vanaf:");
     grid.add(lblDateFrom,0,3);
-    DatePicker dpDateFrom = new DatePicker();
+    DatePicker dpDateFrom;
+    if (latestGasRate != null) {
+      dpDateFrom = new DatePicker(latestGasRate.getDateFrom());
+    } else {
+      dpDateFrom = new DatePicker();
+    }
     dpDateFrom.setPrefHeight(40);
     grid.add(dpDateFrom,1,3);
 
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo,0,4);
-    DatePicker dpDateTo = new DatePicker();
+    DatePicker dpDateTo;
+    if (latestGasRate != null) {
+      dpDateTo = new DatePicker(latestGasRate.getDateTo());
+    } else {
+      dpDateTo = new DatePicker();
+    }
     dpDateTo.setPrefHeight(40);
     grid.add(dpDateTo,1,4);
 

@@ -4,23 +4,23 @@ import java.time.LocalDate;
 
 public class WeeklyUsage {
 
-  private Double usageElec;
-  private Double usageGas;
+  private Integer usageElec;
+  private Integer usageGas;
   private LocalDate dateStart;
   private LocalDate dateEnd;
 
-  public WeeklyUsage(Double usageElec, Double usageGas, LocalDate dateStart, LocalDate dateEnd) {
+  public WeeklyUsage(Integer usageElec, Integer usageGas, LocalDate dateStart, LocalDate dateEnd) {
     this.usageElec = usageElec;
     this.usageGas = usageGas;
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
   }
 
-  public Double getUsageElec() {
+  public Integer getUsageElec() {
     return usageElec;
   }
 
-  public Double getUsageGas() {
+  public Integer getUsageGas() {
     return usageGas;
   }
 
@@ -30,14 +30,6 @@ public class WeeklyUsage {
 
   public LocalDate getDateEnd() {
     return dateEnd;
-  }
-
-  public void setUsageElec(Double usageElec) {
-    this.usageElec = usageElec;
-  }
-
-  public void setUsageGas(Double usageGas) {
-    this.usageGas = usageGas;
   }
 
   public void setDateStart(LocalDate dateStart) {
