@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -261,7 +262,12 @@ public class Dashboard {
 
     Label lblRate = new Label("Tarief stroom:");
     grid.add(lblRate,0,2);
+
     DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
+    sym.setDecimalSeparator('.');
+    df.setDecimalFormatSymbols(sym);
+
     TextField tfRate = new TextField(latestElecRate != null ? df.format(latestElecRate.getRate()) : "");
     tfRate.setPrefHeight(40);
     grid.add(tfRate,1,2);
@@ -357,7 +363,12 @@ public class Dashboard {
 
     Label lblRate = new Label("Tarief gas:");
     grid.add(lblRate,0,2);
+
     DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
+    sym.setDecimalSeparator('.');
+    df.setDecimalFormatSymbols(sym);
+
     TextField tfRate = new TextField(latestGasRate != null ? df.format(latestGasRate.getRate()) : "");
     tfRate.setPrefHeight(40);
     grid.add(tfRate,1,2);
@@ -461,6 +472,10 @@ public class Dashboard {
       tfAdvance = new TextField();
     } else {
       DecimalFormat df = new DecimalFormat("#.00");
+      DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
+      sym.setDecimalSeparator('.');
+      df.setDecimalFormatSymbols(sym);
+
       tfAdvance = new TextField(df.format(txtAdvance));
     }
 
