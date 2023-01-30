@@ -3,7 +3,6 @@ package energie.screens;
 import energie.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -125,68 +124,55 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addUsagePane() {
-    // Nieuwe gridpane aanmaken
+  public GridPane addUsagePane()
+  {
     GridPane grid = new GridPane();
-    // Padding van 20px aan elke kant
     grid.setPadding(new Insets(20, 20, 20, 20));
-    // Horizontale witregel tussen columns
-    grid.setHgap(20);
-    // Verticale witregel tussen rows
-    grid.setVgap(20);
+    grid.setHgap(15);
+    grid.setVgap(25);
 
-    // Header label toevoegen
     Label headerLabel = new Label("Voer uw gebruik van de week in.");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-    grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
-    GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+    GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
+    grid.add(headerLabel, 0, 0, 2, 1);
 
     ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
-    int latestIdx = weeklyUsages.size() - 1;
-    WeeklyUsage latestWeeklyUsage = latestIdx >= 0 ? weeklyUsages.get(latestIdx) : null;
+    WeeklyUsage latestWeeklyUsage = weeklyUsages.size() - 1 >= 0 ? weeklyUsages.get(weeklyUsages.size() - 1) : null;
 
     Label lblUsageElec = new Label("Stroomverbruik:");
-    grid.add(lblUsageElec,0,1);
+    grid.add(lblUsageElec, 0, 1);
+
     TextField tfUsageElec = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageElec().toString() : "");
-    tfUsageElec.setPrefHeight(40);
-    grid.add(tfUsageElec,1,1);
+    GridPane.setHgrow(tfUsageElec, Priority.SOMETIMES);
+    grid.add(tfUsageElec, 1, 1);
 
     Label lblUsageGas = new Label("Gasverbruik:");
-    grid.add(lblUsageGas,0,2);
+    grid.add(lblUsageGas, 0, 2);
+
     TextField tfUsageGas = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageGas().toString() : "");
-    tfUsageGas.setPrefHeight(40);
-    grid.add(tfUsageGas,1,2);
+    GridPane.setHgrow(tfUsageGas, Priority.SOMETIMES);
+    grid.add(tfUsageGas, 1, 2);
 
     Label lblDateStart = new Label("Startdatum:");
-    grid.add(lblDateStart,0,3);
-    DatePicker dpDateStart;
-    if (latestWeeklyUsage != null) {
-      dpDateStart = new DatePicker(latestWeeklyUsage.getDateStart());
-    } else {
-      dpDateStart = new DatePicker();
-    }
-    dpDateStart.setPrefHeight(40);
-    grid.add(dpDateStart,1,3);
+    grid.add(lblDateStart, 0, 3);
+
+    DatePicker dpDateStart = new DatePicker();
+    grid.add(dpDateStart, 1, 3);
 
     Label lblDateEnd = new Label("Einddatum:");
-    grid.add(lblDateEnd,0,4);
-    DatePicker dpDateEnd;
-    if (latestWeeklyUsage != null) {
-      dpDateEnd = new DatePicker(latestWeeklyUsage.getDateEnd());
-    } else {
-      dpDateEnd = new DatePicker();
-    }
-    dpDateEnd.setPrefHeight(40);
-    grid.add(dpDateEnd,1,4);
+    grid.add(lblDateEnd, 0, 4);
 
-    // Voeg submit knop toe
+    DatePicker dpDateEnd = new DatePicker();
+    grid.add(dpDateEnd, 1, 4);
+
+    if (latestWeeklyUsage != null) {
+      dpDateStart.setValue(latestWeeklyUsage.getDateStart());
+      dpDateEnd.setValue(latestWeeklyUsage.getDateEnd());
+    }
+
     Button btnSave = new Button("Opslaan");
-    btnSave.setPrefHeight(40);
-    btnSave.setPrefWidth(100);
-    grid.add(btnSave, 0, 5, 2, 1);
     GridPane.setHalignment(btnSave, HPos.RIGHT);
-    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+    grid.add(btnSave, 1, 5);
 
     btnSave.setOnAction(e -> {
 
@@ -233,68 +219,50 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addElecRatePane() {
-    // Nieuwe gridpane aanmaken
+  public GridPane addElecRatePane()
+  {
     GridPane grid = new GridPane();
-    // Padding van 20px aan elke kant
     grid.setPadding(new Insets(20, 20, 20, 20));
-    // Horizontale witregel tussen columns
-    grid.setHgap(20);
-    // Verticale witregel tussen rows
-    grid.setVgap(20);
+    grid.setHgap(15);
+    grid.setVgap(25);
 
-    // Header label toevoegen
     Label headerLabel = new Label("Voer het huidige stroomtarief in.");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-    grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
-    GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+    GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
+    grid.add(headerLabel, 0, 0, 2, 1);
 
     ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
-    int latestIdx = electricityRates.size() - 1;
-    ElectricityRate latestElecRate = latestIdx >= 0 ? electricityRates.get(latestIdx) : null;
+    ElectricityRate latestElecRate = electricityRates.size() - 1 >= 0 ? electricityRates.get(electricityRates.size() - 1) : null;
 
     Label lblRate = new Label("Tarief stroom:");
-    grid.add(lblRate,0,2);
+    grid.add(lblRate, 0, 1);
 
-    DecimalFormat df = new DecimalFormat("#.00");
-    DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
-    sym.setDecimalSeparator('.');
-    df.setDecimalFormatSymbols(sym);
+    DecimalFormat df = getDecimalFormat();
 
     TextField tfRate = new TextField(latestElecRate != null ? df.format(latestElecRate.getRate()) : "");
-    tfRate.setPrefHeight(40);
-    grid.add(tfRate,1,2);
+    GridPane.setHgrow(tfRate, Priority.SOMETIMES);
+    grid.add(tfRate, 1, 1);
 
     Label lblDateFrom = new Label("Datum vanaf:");
-    grid.add(lblDateFrom,0,3);
-    DatePicker dpDateFrom;
-    if (latestElecRate != null) {
-      dpDateFrom = new DatePicker(latestElecRate.getDateFrom());
-    } else {
-      dpDateFrom = new DatePicker();
-    }
-    dpDateFrom.setPrefHeight(40);
-    grid.add(dpDateFrom,1,3);
+    grid.add(lblDateFrom, 0, 2);
+
+    DatePicker dpDateFrom = new DatePicker();
+    grid.add(dpDateFrom, 1, 2);
 
     Label lblDateTo = new Label("Datum tot:");
-    grid.add(lblDateTo,0,4);
-    DatePicker dpDateTo;
-    if (latestElecRate != null) {
-      dpDateTo = new DatePicker(latestElecRate.getDateTo());
-    } else {
-      dpDateTo = new DatePicker();
-    }
-    dpDateTo.setPrefHeight(40);
-    grid.add(dpDateTo,1,4);
+    grid.add(lblDateTo, 0, 3);
 
-    // Voeg submit knop toe
+    DatePicker dpDateTo =  new DatePicker();
+    grid.add(dpDateTo, 1, 3);
+
+    if (latestElecRate != null) {
+      dpDateFrom.setValue(latestElecRate.getDateFrom());
+      dpDateTo.setValue(latestElecRate.getDateTo());
+    }
+
     Button btnSave = new Button("Opslaan");
-    btnSave.setPrefHeight(40);
-    btnSave.setPrefWidth(100);
-    grid.add(btnSave, 0, 5, 2, 1);
     GridPane.setHalignment(btnSave, HPos.RIGHT);
-    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+    grid.add(btnSave, 1, 4);
 
     btnSave.setOnAction(e -> {
 
@@ -332,68 +300,50 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addGasRatePane() {
-    // Nieuwe gridpane aanmaken
+  public GridPane addGasRatePane()
+  {
     GridPane grid = new GridPane();
-    // Padding van 20px aan elke kant
     grid.setPadding(new Insets(20, 20, 20, 20));
-    // Horizontale witregel tussen columns
-    grid.setHgap(20);
-    // Verticale witregel tussen rows
-    grid.setVgap(20);
+    grid.setHgap(15);
+    grid.setVgap(25);
 
-    // Header label toevoegen
     Label headerLabel = new Label("Voer het huidige gas tarief in.");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-    grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
-    GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+    GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
+    grid.add(headerLabel, 0, 0, 2, 1);
 
     ArrayList<GasRate> gasRates = customer.getGasRates();
-    int latestIdx = gasRates.size() - 1;
-    GasRate latestGasRate = latestIdx >= 0 ? gasRates.get(latestIdx) : null;
+    GasRate latestGasRate = gasRates.size() - 1 >= 0 ? gasRates.get(gasRates.size() - 1) : null;
 
     Label lblRate = new Label("Tarief gas:");
-    grid.add(lblRate,0,2);
+    grid.add(lblRate, 0, 1);
 
-    DecimalFormat df = new DecimalFormat("#.00");
-    DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
-    sym.setDecimalSeparator('.');
-    df.setDecimalFormatSymbols(sym);
+    DecimalFormat df = getDecimalFormat();
 
     TextField tfRate = new TextField(latestGasRate != null ? df.format(latestGasRate.getRate()) : "");
-    tfRate.setPrefHeight(40);
-    grid.add(tfRate,1,2);
+    GridPane.setHgrow(tfRate, Priority.SOMETIMES);
+    grid.add(tfRate, 1, 1);
 
     Label lblDateFrom = new Label("Datum vanaf:");
-    grid.add(lblDateFrom,0,3);
-    DatePicker dpDateFrom;
-    if (latestGasRate != null) {
-      dpDateFrom = new DatePicker(latestGasRate.getDateFrom());
-    } else {
-      dpDateFrom = new DatePicker();
-    }
-    dpDateFrom.setPrefHeight(40);
-    grid.add(dpDateFrom,1,3);
+    grid.add(lblDateFrom,0,2);
+
+    DatePicker dpDateFrom = new DatePicker();
+    grid.add(dpDateFrom,1,2);
 
     Label lblDateTo = new Label("Datum tot:");
-    grid.add(lblDateTo,0,4);
-    DatePicker dpDateTo;
-    if (latestGasRate != null) {
-      dpDateTo = new DatePicker(latestGasRate.getDateTo());
-    } else {
-      dpDateTo = new DatePicker();
-    }
-    dpDateTo.setPrefHeight(40);
-    grid.add(dpDateTo,1,4);
+    grid.add(lblDateTo,0,3);
 
-    // Voeg submit knop toe
+    DatePicker dpDateTo = new DatePicker();
+    grid.add(dpDateTo,1,3);
+
+    if (latestGasRate != null) {
+      dpDateFrom.setValue(latestGasRate.getDateFrom());
+      dpDateTo.setValue(latestGasRate.getDateTo());
+    }
+
     Button btnSave = new Button("Opslaan");
-    btnSave.setPrefHeight(40);
-    btnSave.setPrefWidth(100);
-    grid.add(btnSave, 0, 5, 2, 1);
     GridPane.setHalignment(btnSave, HPos.RIGHT);
-    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+    grid.add(btnSave, 1, 4);
 
     btnSave.setOnAction(e -> {
 
@@ -438,7 +388,6 @@ public class Dashboard {
     grid.setHgap(15);
     grid.setVgap(25);
 
-    // Header label toevoegen
     Label headerLabel = new Label("Voer uw jaarlijkse voorschot in.");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
     GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
@@ -447,25 +396,15 @@ public class Dashboard {
     Label lblAdvance = new Label("Jaarlijks voorschot:");
     grid.add(lblAdvance, 0, 1);
 
-    TextField tfAdvance = new TextField();;
-    GridPane.setHgrow(tfAdvance, Priority.SOMETIMES);
-    tfAdvance.setPrefHeight(40);
-
+    DecimalFormat df = getDecimalFormat();
     Double txtAdvance = customer.getAdvance();
-    if (txtAdvance != null) {
-      DecimalFormat df = new DecimalFormat("#.00");
-      DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
-      sym.setDecimalSeparator('.');
-      df.setDecimalFormatSymbols(sym);
-      tfAdvance.setText(df.format(txtAdvance));
-    }
+
+    TextField tfAdvance = new TextField(txtAdvance != null ? df.format(txtAdvance) : "");
+    GridPane.setHgrow(tfAdvance, Priority.SOMETIMES);
 
     grid.add(tfAdvance, 1, 1);
 
-    // Voeg submit knop toe
     Button btnSave = new Button("Opslaan");
-    btnSave.setPrefHeight(40);
-    btnSave.setPrefWidth(100);
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 2);
 
@@ -492,9 +431,10 @@ public class Dashboard {
     return grid;
   }
 
-  public VBox addVBox() {
+  public VBox addVBox()
+  {
     VBox vbox = new VBox();
-    vbox.setPadding(new Insets(20,20,20,20));
+    vbox.setPadding(new Insets(20,20,20,10));
     vbox.setSpacing(12);
     vbox.setStyle("-fx-border-color: lightgray");
 
@@ -530,6 +470,15 @@ public class Dashboard {
     alert.setContentText(message);
     alert.initOwner(owner);
     alert.show();
+  }
+
+  private DecimalFormat getDecimalFormat()
+  {
+    DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
+    sym.setDecimalSeparator('.');
+    df.setDecimalFormatSymbols(sym);
+    return df;
   }
 
   public Scene getDashboardScene() {

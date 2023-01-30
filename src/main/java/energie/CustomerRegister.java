@@ -1,9 +1,5 @@
 package energie;
 
-import energie.screens.Register;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import java.util.ArrayList;
 
 public class CustomerRegister {
