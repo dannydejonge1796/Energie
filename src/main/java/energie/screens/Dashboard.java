@@ -6,19 +6,19 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import java.lang.reflect.Array;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class Dashboard {
@@ -30,8 +30,8 @@ public class Dashboard {
   private Stage stage;
   private Integer selectedTab;
 
-  public Dashboard(Stage primaryStage, Customer customer, Integer selectedTab, String settingCenterPaneIdx) {
-
+  public Dashboard(Stage primaryStage, Customer customer, Integer selectedTab, String settingCenterPaneIdx)
+  {
     this.stage = primaryStage;
     this.customer = customer;
 
@@ -92,14 +92,12 @@ public class Dashboard {
   public GridPane addDashboardPane() {
     // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
-    grid.setAlignment(Pos.CENTER);
     // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(40, 40, 40, 40));
+    grid.setPadding(new Insets(20, 20, 20, 20));
     // Horizontale witregel tussen columns
-    grid.setHgap(10);
+    grid.setHgap(20);
     // Verticale witregel tussen rows
-    grid.setVgap(10);
+    grid.setVgap(20);
 
     // Header label toevoegen
     Label headerLabel = new Label("Welkom " + customer.getFirstname() + "!");
@@ -130,14 +128,12 @@ public class Dashboard {
   public GridPane addUsagePane() {
     // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
-    grid.setAlignment(Pos.CENTER);
     // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(40, 40, 40, 40));
+    grid.setPadding(new Insets(20, 20, 20, 20));
     // Horizontale witregel tussen columns
-    grid.setHgap(10);
+    grid.setHgap(20);
     // Verticale witregel tussen rows
-    grid.setVgap(10);
+    grid.setVgap(20);
 
     // Header label toevoegen
     Label headerLabel = new Label("Voer uw gebruik van de week in.");
@@ -240,14 +236,12 @@ public class Dashboard {
   public GridPane addElecRatePane() {
     // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
-    grid.setAlignment(Pos.CENTER);
     // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(40, 40, 40, 40));
+    grid.setPadding(new Insets(20, 20, 20, 20));
     // Horizontale witregel tussen columns
-    grid.setHgap(10);
+    grid.setHgap(20);
     // Verticale witregel tussen rows
-    grid.setVgap(10);
+    grid.setVgap(20);
 
     // Header label toevoegen
     Label headerLabel = new Label("Voer het huidige stroomtarief in.");
@@ -339,16 +333,14 @@ public class Dashboard {
   }
 
   public GridPane addGasRatePane() {
-// Nieuwe gridpane aanmaken
+    // Nieuwe gridpane aanmaken
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
-    grid.setAlignment(Pos.CENTER);
     // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(40, 40, 40, 40));
+    grid.setPadding(new Insets(20, 20, 20, 20));
     // Horizontale witregel tussen columns
-    grid.setHgap(10);
+    grid.setHgap(20);
     // Verticale witregel tussen rows
-    grid.setVgap(10);
+    grid.setVgap(20);
 
     // Header label toevoegen
     Label headerLabel = new Label("Voer het huidige gas tarief in.");
@@ -439,56 +431,43 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addAdvancePane() {
-// Nieuwe gridpane aanmaken
+  public GridPane addAdvancePane()
+  {
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
-    grid.setAlignment(Pos.CENTER);
-    // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(40, 40, 40, 40));
-    // Horizontale witregel tussen columns
-    grid.setHgap(10);
-    // Verticale witregel tussen rows
-    grid.setVgap(10);
+    grid.setPadding(new Insets(20, 20, 20, 20));
+    grid.setHgap(15);
+    grid.setVgap(25);
 
     // Header label toevoegen
     Label headerLabel = new Label("Voer uw jaarlijkse voorschot in.");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-    grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
-    GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+    GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
+    grid.add(headerLabel, 0, 0, 2, 1);
 
-    // Jaarlijks voorschot label toevoegen
     Label lblAdvance = new Label("Jaarlijks voorschot:");
-    grid.add(lblAdvance,0,2);
+    grid.add(lblAdvance, 0, 1);
 
-    // Jaarlijks voorschot textfield toevoegen
-
-    TextField tfAdvance;
+    TextField tfAdvance = new TextField();;
+    GridPane.setHgrow(tfAdvance, Priority.SOMETIMES);
+    tfAdvance.setPrefHeight(40);
 
     Double txtAdvance = customer.getAdvance();
-
-    if (txtAdvance == null) {
-      tfAdvance = new TextField();
-    } else {
+    if (txtAdvance != null) {
       DecimalFormat df = new DecimalFormat("#.00");
       DecimalFormatSymbols sym = DecimalFormatSymbols.getInstance();
       sym.setDecimalSeparator('.');
       df.setDecimalFormatSymbols(sym);
-
-      tfAdvance = new TextField(df.format(txtAdvance));
+      tfAdvance.setText(df.format(txtAdvance));
     }
 
-    tfAdvance.setPrefHeight(40);
-    grid.add(tfAdvance,1,2);
+    grid.add(tfAdvance, 1, 1);
 
     // Voeg submit knop toe
     Button btnSave = new Button("Opslaan");
     btnSave.setPrefHeight(40);
     btnSave.setPrefWidth(100);
-    grid.add(btnSave, 0, 5, 2, 1);
     GridPane.setHalignment(btnSave, HPos.RIGHT);
-    GridPane.setMargin(btnSave, new Insets(20, 0,20,0));
+    grid.add(btnSave, 1, 2);
 
     btnSave.setOnAction(e -> {
 
@@ -515,28 +494,31 @@ public class Dashboard {
 
   public VBox addVBox() {
     VBox vbox = new VBox();
-    vbox.setPadding(new Insets(10));
-    vbox.setSpacing(8);
+    vbox.setPadding(new Insets(20,20,20,20));
+    vbox.setSpacing(12);
+    vbox.setStyle("-fx-border-color: lightgray");
 
     Text title = new Text("Instellingen");
     title.setFont(Font.font("Arial", FontWeight.BOLD, 14));
     vbox.getChildren().add(title);
 
-    Hyperlink options[] = new Hyperlink[] {
-            new Hyperlink("Wekelijks gebruik"),
-            new Hyperlink("Stroom tarief"),
-            new Hyperlink("Gas tarief"),
-            new Hyperlink("Jaarlijks voorschot")};
+    Hyperlink hyperOne = new Hyperlink("Wekelijks gebruik");
+    VBox.setMargin(hyperOne, new Insets(0, 0, 0, 8));
+    hyperOne.setOnAction(e -> this.borderSettings.setCenter(addUsagePane()));
 
-    for (int i=0; i<4; i++) {
-      VBox.setMargin(options[i], new Insets(0, 0, 0, 8));
-      vbox.getChildren().add(options[i]);
-    }
+    Hyperlink hyperTwo = new Hyperlink("Stroom tarief");
+    VBox.setMargin(hyperTwo, new Insets(0, 0, 0, 8));
+    hyperTwo.setOnAction(e -> this.borderSettings.setCenter(addElecRatePane()));
 
-    options[0].setOnAction(e -> {this.borderSettings.setCenter(addUsagePane());});
-    options[1].setOnAction(e -> {this.borderSettings.setCenter(addElecRatePane());});
-    options[2].setOnAction(e -> {this.borderSettings.setCenter(addGasRatePane());});
-    options[3].setOnAction(e -> {this.borderSettings.setCenter(addAdvancePane());});
+    Hyperlink hyperThree = new Hyperlink("Gas tarief");
+    VBox.setMargin(hyperThree, new Insets(0, 0, 0, 8));
+    hyperThree.setOnAction(e -> this.borderSettings.setCenter(addGasRatePane()));
+
+    Hyperlink hyperFour = new Hyperlink("Jaarlijks voorschot");
+    VBox.setMargin(hyperFour, new Insets(0, 0, 0, 8));
+    hyperFour.setOnAction(e -> this.borderSettings.setCenter(addAdvancePane()));
+
+    vbox.getChildren().addAll(hyperOne, hyperTwo, hyperThree, hyperFour);
 
     return vbox;
   }
