@@ -1,17 +1,19 @@
 package energie.models;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
 
   private Connection conn;
 
-  public Database(String dbName){
+  public Database()
+  {
     String user = "root";
-    String passwd="root";
-    String cString = "jdbc:mysql://localhost:3306/" + dbName + "?user=" + user + "&password="+ passwd;
+    String password= "";
+    String port = "3306";
+    String db = "dossier";
+    String cString = "jdbc:mysql://localhost:" + port + "/" + db + "?user=" + user + "&password=" + password;
+
     try {
       this.conn = DriverManager.getConnection(cString);
     } catch (SQLException e) {
@@ -20,7 +22,29 @@ public class Database {
     }
   }
 
-  public Connection getConnection() {
+  public ResultSet getData(String query)
+  {
+    try {
+      Statement stm = this.conn.createStatement();
+      return stm.executeQuery(query);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  public void storeData(String query)
+  {
+    try {
+      Statement stm = this.conn.createStatement();
+      stm.execute(query);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public Connection getConn() {
     return conn;
   }
 }
