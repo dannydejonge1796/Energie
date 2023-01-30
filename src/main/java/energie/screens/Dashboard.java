@@ -1,6 +1,6 @@
 package energie.screens;
 
-import energie.*;
+import energie.models.*;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -94,23 +94,26 @@ public class Dashboard {
     vBox.setPadding(new Insets(20, 20, 20, 20));
     vBox.setSpacing(15);
 
-    // Header label toevoegen
     Label headerLabel = new Label("Welkom " + customer.getFirstname() + "!");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
     vBox.getChildren().add(headerLabel);
 
-    VBox vboxNotif = new VBox();
-    vboxNotif.setPadding(new Insets(5,5,5,5));
-    GridPane.setHgrow(vboxNotif, Priority.ALWAYS);
-    vboxNotif.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+    if (!this.notifications.isEmpty()) {
+      VBox vboxNotif = new VBox();
+      vboxNotif.setPadding(new Insets(5,5,5,5));
+      GridPane.setHgrow(vboxNotif, Priority.ALWAYS);
+      vboxNotif.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
 
-    for (Notification notification : this.notifications) {
-      Text ntfctnTxt = new Text("- " + notification.getTxtNotification());
-      ntfctnTxt.setFont(Font.font("Arial", FontWeight.MEDIUM, 12));
-      vboxNotif.getChildren().add(ntfctnTxt);
+      for (Notification notification : this.notifications) {
+        Text ntfctnTxt = new Text("- " + notification.getTxtNotification());
+        ntfctnTxt.setFont(Font.font("Arial", FontWeight.MEDIUM, 12));
+        vboxNotif.getChildren().add(ntfctnTxt);
+      }
+
+      vBox.getChildren().add(vboxNotif);
     }
 
-    vBox.getChildren().add(vboxNotif);
+
 
     return vBox;
   }

@@ -1,5 +1,6 @@
 package energie;
 
+import energie.models.CustomerRegister;
 import energie.screens.Home;
 import javafx.stage.Stage;
 

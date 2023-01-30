@@ -5,4 +5,6 @@ module energie {
 
   opens energie to javafx.fxml;
   exports energie;
+  exports energie.models;
+  opens energie.models to javafx.fxml;
 }

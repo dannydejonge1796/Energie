@@ -1,7 +1,7 @@
 package energie.screens;
 
-import energie.Customer;
-import energie.CustomerRegister;
+import energie.models.Customer;
+import energie.models.CustomerRegister;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

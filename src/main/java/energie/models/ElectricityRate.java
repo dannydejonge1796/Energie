@@ -1,14 +1,14 @@
-package energie;
+package energie.models;
 
 import java.time.LocalDate;
 
-public class GasRate {
+public class ElectricityRate {
 
   private Double rate;
   private LocalDate dateFrom;
   private LocalDate dateTo;
 
-  public GasRate(Double rate, LocalDate dateFrom, LocalDate dateTo) {
+  public ElectricityRate(Double rate, LocalDate dateFrom, LocalDate dateTo) {
     this.rate = rate;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;

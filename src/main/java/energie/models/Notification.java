@@ -1,4 +1,4 @@
-package energie;
+package energie.models;
 
 public class Notification {
 

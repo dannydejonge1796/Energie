@@ -1,4 +1,4 @@
-package energie;
+package energie.models;
 
 import java.time.LocalDate;
 

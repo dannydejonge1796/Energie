@@ -1,9 +1,7 @@
 package energie.screens;
 
-import energie.Customer;
-import energie.CustomerRegister;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import energie.models.Customer;
+import energie.models.CustomerRegister;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,11 +16,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.util.ArrayList;
 
 public class Register {
 
