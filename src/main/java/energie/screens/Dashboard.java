@@ -85,43 +85,34 @@ public class Dashboard {
 
     tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-    this.dashboardScene = new Scene(tabPane,640, 360);
+    this.dashboardScene = new Scene(tabPane, 760, 480);
   }
 
-  public GridPane addDashboardPane() {
-    // Nieuwe gridpane aanmaken
-    GridPane grid = new GridPane();
-    // Padding van 20px aan elke kant
-    grid.setPadding(new Insets(20, 20, 20, 20));
-    // Horizontale witregel tussen columns
-    grid.setHgap(20);
-    // Verticale witregel tussen rows
-    grid.setVgap(20);
+  public VBox addDashboardPane()
+  {
+    VBox vBox = new VBox();
+    vBox.setPadding(new Insets(20, 20, 20, 20));
+    vBox.setSpacing(15);
 
     // Header label toevoegen
     Label headerLabel = new Label("Welkom " + customer.getFirstname() + "!");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-    grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
-    GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+    vBox.getChildren().add(headerLabel);
 
-    Label ntfctnHdrLabel = new Label("Notificaties");
-    ntfctnHdrLabel.setFont(Font.font("Arial", FontWeight.MEDIUM, 18));
-    grid.add(ntfctnHdrLabel, 0,1,2,1);
-    GridPane.setHalignment(ntfctnHdrLabel, HPos.LEFT);
+    VBox vboxNotif = new VBox();
+    vboxNotif.setPadding(new Insets(5,5,5,5));
+    GridPane.setHgrow(vboxNotif, Priority.ALWAYS);
+    vboxNotif.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
 
-    int count = 2;
     for (Notification notification : this.notifications) {
-      Text ntfctnTxt = new Text(notification.getTxtNotification());
-
+      Text ntfctnTxt = new Text("- " + notification.getTxtNotification());
       ntfctnTxt.setFont(Font.font("Arial", FontWeight.MEDIUM, 12));
-      ntfctnTxt.setStyle("-fx-text-fill: red");
-      grid.add(ntfctnTxt, 0, count,2,1);
-      GridPane.setHalignment(ntfctnTxt, HPos.LEFT);
-      count++;
+      vboxNotif.getChildren().add(ntfctnTxt);
     }
 
-    return grid;
+    vBox.getChildren().add(vboxNotif);
+
+    return vBox;
   }
 
   public GridPane addUsagePane()
