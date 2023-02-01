@@ -2,6 +2,7 @@ package energie.screens;
 
 import energie.models.Customer;
 import energie.models.CustomerRegister;
+import energie.models.Database;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,10 +21,12 @@ public class Home {
 
   private Stage stage;
   private Scene homeScene;
+  private Database db;
   private CustomerRegister cR;
 
-  public Home(Stage primaryStage, CustomerRegister customerRegister) {
+  public Home(Stage primaryStage, Database db, CustomerRegister customerRegister) {
 
+    this.db = db;
     this.cR = customerRegister;
 
     primaryStage.setResizable(false);
@@ -37,7 +40,8 @@ public class Home {
     this.homeScene = new Scene(border,640, 360);
   }
 
-  public GridPane addHomePane() {
+  public GridPane addHomePane()
+  {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
@@ -66,8 +70,8 @@ public class Home {
         return;
       }
 
-      if (cR.getCustomer(customerNr) != null) {
-        Customer customer = cR.getCustomer(customerNr);
+      Customer customer = cR.getCustomer(Integer.parseInt(customerNr));
+      if (customer != null) {
         stage.setScene(new Dashboard(this.stage, customer, 0, "usage").getDashboardScene());
       } else {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer bestaat niet!");
@@ -81,7 +85,7 @@ public class Home {
     grid.add(txtExistingCustomer, 0, 4);
 
     Button btnRegister = new Button("Registreren");
-    btnRegister.setOnAction(e -> stage.setScene(new Register(this.stage, this.cR).getRegisterScene()));
+    btnRegister.setOnAction(e -> stage.setScene(new Register(this.stage, this.db, this.cR).getRegisterScene()));
     grid.add(btnRegister, 0, 6);
 
     return grid;

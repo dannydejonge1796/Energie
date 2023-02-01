@@ -1,12 +1,11 @@
 package energie.models;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Customer {
 
 //  private Database database;
-  private String customerNr;
+  private Integer customerNr;
   private String firstname;
   private String lastname;
   private Double advance;
@@ -14,28 +13,18 @@ public class Customer {
   private ArrayList<GasRate> gasRates;
   private ArrayList<WeeklyUsage> weeklyUsages;
 
-  public Customer(String firstname, String lastname) {
-//    this.database = new Database("test");
-
-    Random rand = new Random();
-    StringBuilder randomCustomerNr = new StringBuilder();
-    for (int i = 0; i < 3; i++) {
-      int randomNumber = rand.nextInt(10);
-      randomCustomerNr.append(randomNumber);
-    }
-
-    System.out.println(randomCustomerNr);
-
-    this.customerNr = randomCustomerNr.toString();
+  public Customer(Integer customerNr, String firstname, String lastname, Double advance)
+  {
+    this.customerNr = customerNr;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.advance = null;
+    this.advance = advance;
     this.electricityRates = new ArrayList<>();
     this.gasRates = new ArrayList<>();
     this.weeklyUsages = new ArrayList<>();
   }
 
-  public String getCustomerNr() {
+  public Integer getCustomerNr() {
     return customerNr;
   }
 
@@ -79,7 +68,7 @@ public class Customer {
     this.weeklyUsages.add(weeklyUsage);
   }
 
-  public void setCustomerNr(String customerNr) {
+  public void setCustomerNr(Integer customerNr) {
     this.customerNr = customerNr;
   }
 

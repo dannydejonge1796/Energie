@@ -2,6 +2,7 @@ package energie.screens;
 
 import energie.models.Customer;
 import energie.models.CustomerRegister;
+import energie.models.Database;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,13 +20,18 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.util.Random;
+
 public class Register {
 
   private Stage stage;
   private Scene registerScene;
+  private Database db;
   private CustomerRegister cR;
 
-  public Register(Stage primaryStage, CustomerRegister customerRegister) {
+  public Register(Stage primaryStage, Database db, CustomerRegister customerRegister)
+  {
+    this.db = db;
     this.cR = customerRegister;
 
     primaryStage.setTitle("Energie - registreren");
@@ -37,16 +43,12 @@ public class Register {
     this.registerScene = new Scene(border,640, 360);
   }
 
-  public GridPane createRegFormPane() {
-    // Nieuwe gridpane aanmaken
+  public GridPane createRegFormPane()
+  {
     GridPane grid = new GridPane();
-    // Gridpane in het midden van het scherm positioneren
     grid.setAlignment(Pos.CENTER);
-    // Padding van 20px aan elke kant
     grid.setPadding(new Insets(40, 40, 40, 40));
-    // Horizontale witregel tussen columns
     grid.setHgap(10);
-    // Verticale witregel tussen rows
     grid.setVgap(10);
 
     // columnOneConstraints will be applied to all the nodes placed in column one.
@@ -63,7 +65,7 @@ public class Register {
     Label headerLabel = new Label("Registreren");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
     grid.add(headerLabel, 0,0,2,1);
-    GridPane.setHalignment(headerLabel, HPos.CENTER);
+    GridPane.setHalignment(headerLabel, HPos.LEFT);
     GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
     // Voornaam label toevoegen
@@ -118,11 +120,20 @@ public class Register {
         return;
       }
 
-      Customer customer = new Customer(firstname, lastname);
+      Random rand = new Random();
+      StringBuilder randomCustomerNr = new StringBuilder();
+      for (int i = 0; i < 3; i++) {
+        int randomNumber = rand.nextInt(10);
+        randomCustomerNr.append(randomNumber);
+      }
+
+      Integer customerNr = Integer.parseInt(randomCustomerNr.toString());
+
+      Customer customer = new Customer(customerNr, firstname, lastname, null);
       cR.addCustomer(customer);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");
-      stage.setScene(new Home(stage, cR).getHomeScene());
+      stage.setScene(new Home(stage, db,  cR).getHomeScene());
     });
 
     return grid;
