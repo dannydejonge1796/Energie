@@ -70,7 +70,7 @@ public class Home {
         return;
       }
 
-      Customer customer = cR.getCustomer(Integer.parseInt(customerNr));
+      Customer customer = cR.getCustomer(customerNr);
       if (customer != null) {
         stage.setScene(new Dashboard(this.stage, customer, 0, "usage").getDashboardScene());
       } else {

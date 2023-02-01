@@ -127,9 +127,7 @@ public class Register {
         randomCustomerNr.append(randomNumber);
       }
 
-      Integer customerNr = Integer.parseInt(randomCustomerNr.toString());
-
-      Customer customer = new Customer(customerNr, firstname, lastname, null);
+      Customer customer = new Customer(randomCustomerNr.toString(), firstname, lastname, null);
       cR.addCustomer(customer);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");

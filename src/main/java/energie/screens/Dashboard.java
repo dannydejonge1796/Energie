@@ -484,7 +484,7 @@ public class Dashboard {
     LocalDate now = LocalDate.now();
 
     Double advance = customer.getAdvance();
-    if (advance == null) {
+    if (advance <= 0) {
       String txtNotification = "U heeft nog geen jaarlijks voorschot ingevoerd!";
       Notification notification = new Notification(txtNotification);
       notifications.add(notification);

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 public class Customer {
 
-//  private Database database;
-  private Integer customerNr;
+  private String customerNr;
   private String firstname;
   private String lastname;
   private Double advance;
@@ -13,7 +12,7 @@ public class Customer {
   private ArrayList<GasRate> gasRates;
   private ArrayList<WeeklyUsage> weeklyUsages;
 
-  public Customer(Integer customerNr, String firstname, String lastname, Double advance)
+  public Customer(String customerNr, String firstname, String lastname, Double advance)
   {
     this.customerNr = customerNr;
     this.firstname = firstname;
@@ -24,7 +23,7 @@ public class Customer {
     this.weeklyUsages = new ArrayList<>();
   }
 
-  public Integer getCustomerNr() {
+  public String getCustomerNr() {
     return customerNr;
   }
 
@@ -68,7 +67,7 @@ public class Customer {
     this.weeklyUsages.add(weeklyUsage);
   }
 
-  public void setCustomerNr(Integer customerNr) {
+  public void setCustomerNr(String customerNr) {
     this.customerNr = customerNr;
   }
 

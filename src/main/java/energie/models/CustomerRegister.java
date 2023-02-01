@@ -11,7 +11,7 @@ public class CustomerRegister {
     this.db = db;
   }
 
-  public Customer getCustomer(Integer customerNumber)
+  public Customer getCustomer(String customerNumber)
   {
     String query =
             "SELECT * " +
@@ -24,7 +24,7 @@ public class CustomerRegister {
     try {
       if (result.next()) {
         return new Customer(
-                result.getInt("number"),
+                result.getString("number"),
                 result.getString("firstname"),
                 result.getString("lastname"),
                 (double) result.getFloat("advance")
@@ -39,13 +39,14 @@ public class CustomerRegister {
 
   public void addCustomer(Customer customer)
   {
-    Integer number = customer.getCustomerNr();
+    String number = customer.getCustomerNr();
     String firstname = customer.getFirstname();
     String lastname = customer.getLastname();
-    float advance = customer.getAdvance().floatValue();
 
     String query =
-            "INSERT INTRO customer ('number', 'firstname', 'lastname', 'advance') " +
-            "VALUES ('"+number+"', '"+firstname+"', '"+lastname+"', '"+advance+"')";
+            "INSERT INTO customer (number, firstname, lastname) " +
+            "VALUES ('"+number+"', '"+firstname+"', '"+lastname+"')";
+
+    db.storeData(query);
   }
 }
