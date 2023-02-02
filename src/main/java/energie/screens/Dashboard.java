@@ -203,7 +203,8 @@ public class Dashboard {
         return;
       }
 
-      WeeklyUsage weeklyUsage = new WeeklyUsage(Integer.parseInt(usageElec), Integer.parseInt(usageGas), dateStart, dateEnd);
+      WeeklyUsage weeklyUsage = new WeeklyUsage(this.customer.getCustomerNr(), Integer.parseInt(usageElec), Integer.parseInt(usageGas), dateStart, dateEnd);
+      weeklyUsage.store();
       customer.addToWeeklyUsages(weeklyUsage);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
@@ -285,7 +286,7 @@ public class Dashboard {
       }
 
       ElectricityRate electricityRate = new ElectricityRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
-      electricityRate.add();
+      electricityRate.store();
       customer.addToElectricityRates(electricityRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
@@ -367,7 +368,7 @@ public class Dashboard {
       }
 
       GasRate gasRate = new GasRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
-      gasRate.add();
+      gasRate.store();
       customer.addToGasRates(gasRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");

@@ -125,7 +125,7 @@ public class Register {
       }
 
       Customer customer = new Customer(randomCustomerNr.toString(), firstname, lastname, null);
-      customer.add();
+      customer.store();
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");
       stage.setScene(new Home(stage, cR).getHomeScene());

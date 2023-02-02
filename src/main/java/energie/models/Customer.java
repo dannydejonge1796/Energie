@@ -23,7 +23,7 @@ public class Customer {
     this.advance = advance;
     initElectricityRates();
     initGasRates();
-    this.weeklyUsages = new ArrayList<>();
+    initWeeklyUsage();
   }
 
   private void initElectricityRates()
@@ -40,7 +40,7 @@ public class Customer {
     try {
       while (result.next()) {
         this.electricityRates.add(new ElectricityRate(
-                result.getString("number"),
+                result.getString("customer_number"),
                 (double) result.getFloat("rate"),
                 result.getDate("date_from").toLocalDate(),
                 result.getDate("date_to").toLocalDate()
@@ -65,7 +65,7 @@ public class Customer {
     try {
       while (result.next()) {
         this.gasRates.add(new GasRate(
-                result.getString("number"),
+                result.getString("customer_number"),
                 (double) result.getFloat("rate"),
                 result.getDate("date_from").toLocalDate(),
                 result.getDate("date_to").toLocalDate()
@@ -76,7 +76,33 @@ public class Customer {
     }
   }
 
-  public void add()
+  private void initWeeklyUsage()
+  {
+    this.weeklyUsages = new ArrayList<>();
+
+    String query =
+            "SELECT * " +
+            "FROM weekly_usage " +
+            "WHERE customer_number = '"+customerNr+"'";
+
+    ResultSet result = Application.db.getData(query);
+
+    try {
+      while (result.next()) {
+        this.weeklyUsages.add(new WeeklyUsage(
+                result.getString("customer_number"),
+                result.getInt("usage_elec"),
+                result.getInt("usage_gas"),
+                result.getDate("date_start").toLocalDate(),
+                result.getDate("date_end").toLocalDate()
+        ));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void store()
   {
     String query =
             "INSERT INTO customer (number, firstname, lastname) " +

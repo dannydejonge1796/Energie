@@ -19,7 +19,7 @@ public class GasRate {
     this.dateTo = dateTo;
   }
 
-  public void add()
+  public void store()
   {
     String query =
             "INSERT INTO gas_rate (customer_number, rate, date_from, date_to) " +
