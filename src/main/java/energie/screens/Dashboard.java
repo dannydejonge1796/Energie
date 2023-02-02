@@ -284,7 +284,8 @@ public class Dashboard {
         return;
       }
 
-      ElectricityRate electricityRate = new ElectricityRate(Double.parseDouble(rate), dateFrom, dateTo);
+      ElectricityRate electricityRate = new ElectricityRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
+      electricityRate.add();
       customer.addToElectricityRates(electricityRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
@@ -365,7 +366,8 @@ public class Dashboard {
         return;
       }
 
-      GasRate gasRate = new GasRate(Double.parseDouble(rate), dateFrom, dateTo);
+      GasRate gasRate = new GasRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
+      gasRate.add();
       customer.addToGasRates(gasRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");

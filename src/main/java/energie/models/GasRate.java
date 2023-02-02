@@ -1,17 +1,31 @@
 package energie.models;
 
+import energie.Application;
+
 import java.time.LocalDate;
 
 public class GasRate {
 
+  private String customerNr;
   private Double rate;
   private LocalDate dateFrom;
   private LocalDate dateTo;
 
-  public GasRate(Double rate, LocalDate dateFrom, LocalDate dateTo) {
+  public GasRate(String customerNr, Double rate, LocalDate dateFrom, LocalDate dateTo)
+  {
+    this.customerNr = customerNr;
     this.rate = rate;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
+  }
+
+  public void add()
+  {
+    String query =
+            "INSERT INTO gas_rate (customer_number, rate, date_from, date_to) " +
+            "VALUES ('" + customerNr + "', '" + rate + "', '" + dateFrom + "', '" + dateTo + "')";
+
+    Application.db.storeData(query);
   }
 
   public Double getRate() {
@@ -24,17 +38,5 @@ public class GasRate {
 
   public LocalDate getDateTo() {
     return dateTo;
-  }
-
-  public void setRate(Double rate) {
-    this.rate = rate;
-  }
-
-  public void setDateFrom(LocalDate dateFrom) {
-    this.dateFrom = dateFrom;
-  }
-
-  public void setDateTo(LocalDate dateTo) {
-    this.dateTo = dateTo;
   }
 }

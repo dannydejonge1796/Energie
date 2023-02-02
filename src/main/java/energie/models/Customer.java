@@ -2,6 +2,8 @@ package energie.models;
 
 import energie.Application;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Customer {
@@ -14,22 +16,71 @@ public class Customer {
   private ArrayList<GasRate> gasRates;
   private ArrayList<WeeklyUsage> weeklyUsages;
 
-  public Customer(String customerNr, String firstname, String lastname, Double advance)
-  {
+  public Customer(String customerNr, String firstname, String lastname, Double advance) {
     this.customerNr = customerNr;
     this.firstname = firstname;
     this.lastname = lastname;
     this.advance = advance;
-    this.electricityRates = new ArrayList<>();
-    this.gasRates = new ArrayList<>();
+    initElectricityRates();
+    initGasRates();
     this.weeklyUsages = new ArrayList<>();
+  }
+
+  private void initElectricityRates()
+  {
+    this.electricityRates = new ArrayList<>();
+
+    String query =
+            "SELECT * " +
+                    "FROM electricity_rate " +
+                    "WHERE customer_number = '"+customerNr+"'";
+
+    ResultSet result = Application.db.getData(query);
+
+    try {
+      while (result.next()) {
+        this.electricityRates.add(new ElectricityRate(
+                result.getString("number"),
+                (double) result.getFloat("rate"),
+                result.getDate("date_from").toLocalDate(),
+                result.getDate("date_to").toLocalDate()
+        ));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void initGasRates()
+  {
+    this.gasRates = new ArrayList<>();
+
+    String query =
+            "SELECT * " +
+            "FROM gas_rate " +
+            "WHERE customer_number = '"+customerNr+"'";
+
+    ResultSet result = Application.db.getData(query);
+
+    try {
+      while (result.next()) {
+        this.gasRates.add(new GasRate(
+                result.getString("number"),
+                (double) result.getFloat("rate"),
+                result.getDate("date_from").toLocalDate(),
+                result.getDate("date_to").toLocalDate()
+        ));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void add()
   {
     String query =
             "INSERT INTO customer (number, firstname, lastname) " +
-            "VALUES ('"+customerNr+"', '"+firstname+"', '"+lastname+"')";
+                    "VALUES ('" + customerNr + "', '" + firstname + "', '" + lastname + "')";
 
     Application.db.storeData(query);
   }
@@ -38,11 +89,27 @@ public class Customer {
   {
     String query =
             "UPDATE customer " +
-            "SET firstname = '"+firstname+"', lastname = '"+lastname+"', advance = '"+advance+"'" +
-            "WHERE number = '"+customerNr+"'";
+                    "SET firstname = '" + firstname + "', lastname = '" + lastname + "', advance = '" + advance + "'" +
+                    "WHERE number = '" + customerNr + "'";
 
 
     Application.db.storeData(query);
+  }
+
+  public void addToElectricityRates(ElectricityRate electricityRate) {
+    this.electricityRates.add(electricityRate);
+  }
+
+  public void addToGasRates(GasRate gasRate) {
+    this.gasRates.add(gasRate);
+  }
+
+  public void setAdvance(Double advance) {
+    this.advance = advance;
+  }
+
+  public void addToWeeklyUsages(WeeklyUsage weeklyUsage) {
+    this.weeklyUsages.add(weeklyUsage);
   }
 
   public String getCustomerNr() {
@@ -71,45 +138,5 @@ public class Customer {
 
   public ArrayList<WeeklyUsage> getWeeklyUsages() {
     return weeklyUsages;
-  }
-
-  public void setAdvance(Double advance) {
-    this.advance = advance;
-  }
-
-  public void addToElectricityRates(ElectricityRate electricityRate) {
-    this.electricityRates.add(electricityRate);
-  }
-
-  public void addToGasRates(GasRate gasRate) {
-    this.gasRates.add(gasRate);
-  }
-
-  public void addToWeeklyUsages(WeeklyUsage weeklyUsage) {
-    this.weeklyUsages.add(weeklyUsage);
-  }
-
-  public void setCustomerNr(String customerNr) {
-    this.customerNr = customerNr;
-  }
-
-  public void setFirstname(String firstname) {
-    this.firstname = firstname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
-  }
-
-  public void setElectricityRates(ArrayList<ElectricityRate> electricityRates) {
-    this.electricityRates = electricityRates;
-  }
-
-  public void setGasRates(ArrayList<GasRate> gasRates) {
-    this.gasRates = gasRates;
-  }
-
-  public void setWeeklyUsages(ArrayList<WeeklyUsage> weeklyUsages) {
-    this.weeklyUsages = weeklyUsages;
   }
 }
