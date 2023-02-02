@@ -1,7 +1,9 @@
 package energie.models;
 
 import energie.Application;
+import javafx.scene.control.TableView;
 
+import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +27,34 @@ public class Customer {
     initGasRates();
     initWeeklyUsage();
   }
+
+//  public TableView<Result> getTableMonth()
+//  {
+
+
+//
+//  SELECT
+//  SUM(weekly_usage.usage_elec) as total_elec_usage,
+//  SUM(weekly_usage.usage_gas) as total_gas_usage,
+//  ROUND(AVG(electricity_rate.rate), 2) as avg_elec_rate,
+//  ROUND(AVG(gas_rate.rate), 2) as avg_gas_rate,
+//  ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as total_gas_cost,
+//  ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as total_elec_cost,
+//  ROUND(SUM(customer.advance)/12, 2) as avg_advance
+//  FROM weekly_usage
+//  JOIN electricity_rate
+//  ON weekly_usage.date_start >= electricity_rate.date_from
+//  AND weekly_usage.date_end <= electricity_rate.date_to
+//  JOIN gas_rate
+//  ON weekly_usage.date_start >= gas_rate.date_from
+//  AND weekly_usage.date_end <= gas_rate.date_to
+//  JOIN customer
+//  ON weekly_usage.customer_number = customer.number
+//  WHERE weekly_usage.date_end >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
+//  AND weekly_usage.customer_number = 123;
+
+
+//  }
 
   private void initElectricityRates()
   {
