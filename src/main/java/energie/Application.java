@@ -7,11 +7,14 @@ import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {
+
+  public static Database db;
+
   @Override
   public void start(Stage primaryStage) {
-    Database db = new Database("energy");
-    CustomerRegister cR = new CustomerRegister(db);
-    primaryStage.setScene(new Home(primaryStage, db, cR).getHomeScene());
+    db = new Database("energy");
+    CustomerRegister cR = new CustomerRegister();
+    primaryStage.setScene(new Home(primaryStage, cR).getHomeScene());
     primaryStage.show();
   }
 

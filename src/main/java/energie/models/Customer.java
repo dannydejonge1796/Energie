@@ -1,5 +1,7 @@
 package energie.models;
 
+import energie.Application;
+
 import java.util.ArrayList;
 
 public class Customer {
@@ -21,6 +23,26 @@ public class Customer {
     this.electricityRates = new ArrayList<>();
     this.gasRates = new ArrayList<>();
     this.weeklyUsages = new ArrayList<>();
+  }
+
+  public void add()
+  {
+    String query =
+            "INSERT INTO customer (number, firstname, lastname) " +
+            "VALUES ('"+customerNr+"', '"+firstname+"', '"+lastname+"')";
+
+    Application.db.storeData(query);
+  }
+
+  public void update()
+  {
+    String query =
+            "UPDATE customer " +
+            "SET firstname = '"+firstname+"', lastname = '"+lastname+"', advance = '"+advance+"'" +
+            "WHERE number = '"+customerNr+"'";
+
+
+    Application.db.storeData(query);
   }
 
   public String getCustomerNr() {

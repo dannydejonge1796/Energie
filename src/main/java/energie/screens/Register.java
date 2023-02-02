@@ -2,7 +2,6 @@ package energie.screens;
 
 import energie.models.Customer;
 import energie.models.CustomerRegister;
-import energie.models.Database;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,12 +25,10 @@ public class Register {
 
   private Stage stage;
   private Scene registerScene;
-  private Database db;
   private CustomerRegister cR;
 
-  public Register(Stage primaryStage, Database db, CustomerRegister customerRegister)
+  public Register(Stage primaryStage, CustomerRegister customerRegister)
   {
-    this.db = db;
     this.cR = customerRegister;
 
     primaryStage.setTitle("Energie - registreren");
@@ -128,10 +125,10 @@ public class Register {
       }
 
       Customer customer = new Customer(randomCustomerNr.toString(), firstname, lastname, null);
-      cR.addCustomer(customer);
+      customer.add();
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");
-      stage.setScene(new Home(stage, db,  cR).getHomeScene());
+      stage.setScene(new Home(stage, cR).getHomeScene());
     });
 
     return grid;

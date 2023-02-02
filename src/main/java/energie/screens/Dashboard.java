@@ -417,6 +417,7 @@ public class Dashboard {
       }
 
       this.customer.setAdvance(Double.parseDouble(strAdvance));
+      this.customer.update();
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw jaarlijkse voorschot is ingesteld!");
       stage.setScene(new Dashboard(stage, customer, 1, "advance").getDashboardScene());

@@ -1,15 +1,11 @@
 package energie.models;
 
+import energie.Application;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CustomerRegister {
-
-  private Database db;
-
-  public CustomerRegister(Database db) {
-    this.db = db;
-  }
 
   public Customer getCustomer(String customerNumber)
   {
@@ -19,7 +15,7 @@ public class CustomerRegister {
             "WHERE number = '" + customerNumber + "' " +
             "LIMIT 1";
 
-    ResultSet result = db.getData(query);
+    ResultSet result = Application.db.getData(query);
 
     try {
       if (result.next()) {
@@ -35,18 +31,5 @@ public class CustomerRegister {
     }
 
     return null;
-  }
-
-  public void addCustomer(Customer customer)
-  {
-    String number = customer.getCustomerNr();
-    String firstname = customer.getFirstname();
-    String lastname = customer.getLastname();
-
-    String query =
-            "INSERT INTO customer (number, firstname, lastname) " +
-            "VALUES ('"+number+"', '"+firstname+"', '"+lastname+"')";
-
-    db.storeData(query);
   }
 }
