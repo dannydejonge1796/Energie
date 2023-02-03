@@ -113,7 +113,7 @@ public class Dashboard {
       vBox.getChildren().add(vboxNotif);
     }
 
-
+    vBox.getChildren().add(this.customer.getTableMonth());
 
     return vBox;
   }

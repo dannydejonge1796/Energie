@@ -1,6 +1,10 @@
 package energie.models;
 
 import energie.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import javax.xml.transform.Result;
@@ -28,33 +32,102 @@ public class Customer {
     initWeeklyUsage();
   }
 
-//  public TableView<Result> getTableMonth()
-//  {
+  public TableView<ObservableList<String>> getTableMonth()
+  {
+    TableView<ObservableList<String>> tableView = new TableView<>();
+    tableView.setEditable(true);
 
+    ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
 
-//
-//  SELECT
-//  SUM(weekly_usage.usage_elec) as total_elec_usage,
-//  SUM(weekly_usage.usage_gas) as total_gas_usage,
-//  ROUND(AVG(electricity_rate.rate), 2) as avg_elec_rate,
-//  ROUND(AVG(gas_rate.rate), 2) as avg_gas_rate,
-//  ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as total_gas_cost,
-//  ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as total_elec_cost,
-//  ROUND(SUM(customer.advance)/12, 2) as avg_advance
-//  FROM weekly_usage
-//  JOIN electricity_rate
-//  ON weekly_usage.date_start >= electricity_rate.date_from
-//  AND weekly_usage.date_end <= electricity_rate.date_to
-//  JOIN gas_rate
-//  ON weekly_usage.date_start >= gas_rate.date_from
-//  AND weekly_usage.date_end <= gas_rate.date_to
-//  JOIN customer
-//  ON weekly_usage.customer_number = customer.number
-//  WHERE weekly_usage.date_end >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
-//  AND weekly_usage.customer_number = 123;
+    TableColumn<ObservableList<String>, String> column1 = new TableColumn<>("Gebruik elek");
+    column1.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(0)));
+    TableColumn<ObservableList<String>, String> column2 = new TableColumn<>("Gebruik gas");
+    column2.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(1)));
+    TableColumn<ObservableList<String>, String> column3 = new TableColumn<>("Tarief elek");
+    column3.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(2)));
+    TableColumn<ObservableList<String>, String> column4 = new TableColumn<>("Tarief gas");
+    column4.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(3)));
+    TableColumn<ObservableList<String>, String> column5 = new TableColumn<>("Kosten elek");
+    column5.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(4)));
+    TableColumn<ObservableList<String>, String> column6 = new TableColumn<>("Kosten gas");
+    column6.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(5)));
+    TableColumn<ObservableList<String>, String> column7 = new TableColumn<>("Kosten totaal");
+    column7.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(6)));
+    TableColumn<ObservableList<String>, String> column8 = new TableColumn<>("Voorschot");
+    column8.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(7)));
+    TableColumn<ObservableList<String>, String> column9 = new TableColumn<>("Overschrijding");
+    column9.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(8)));
 
+    tableView.getColumns().add(column1);
+    tableView.getColumns().add(column2);
+    tableView.getColumns().add(column3);
+    tableView.getColumns().add(column4);
+    tableView.getColumns().add(column5);
+    tableView.getColumns().add(column6);
+    tableView.getColumns().add(column7);
+    tableView.getColumns().add(column8);
+    tableView.getColumns().add(column9);
 
-//  }
+    tableView.setItems(data);
+
+    String query =
+    "SELECT " +
+      "MONTH(weekly_usage.date_start) as Month, " +
+      "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
+      "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
+      "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
+      "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
+      "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
+      "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
+      "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
+      "ROUND(SUM(customer.advance)/12, 2) as Average_advance, " +
+      "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance)/12, 2) as Exceedance " +
+    "FROM weekly_usage " +
+    "JOIN electricity_rate " +
+    "ON weekly_usage.date_start >= electricity_rate.date_from " +
+    "AND weekly_usage.date_end <= electricity_rate.date_to " +
+    "JOIN gas_rate " +
+    "ON weekly_usage.date_start >= gas_rate.date_from " +
+    "AND weekly_usage.date_end <= gas_rate.date_to " +
+    "JOIN customer " +
+    "ON weekly_usage.customer_number = customer.number " +
+    "WHERE weekly_usage.customer_number = 123 " +
+    "AND weekly_usage.date_end <= CURRENT_DATE " +
+    "GROUP BY MONTH(weekly_usage.date_start);";
+
+    ResultSet result = Application.db.getData(query);
+
+    try {
+      while (result.next()) {
+        ObservableList<String> row = FXCollections.observableArrayList();
+
+        String usageElec = String.valueOf(result.getInt("Total_elec_usage"));
+        row.add(usageElec);
+        String usageGas = String.valueOf(result.getInt("Total_gas_usage"));
+        row.add(usageGas);
+        String rateElec = String.valueOf(result.getFloat("Average_elec_rate"));
+        row.add(rateElec);
+        String rateGas = String.valueOf(result.getFloat("Average_gas_rate"));
+        row.add(rateGas);
+        String costElec = String.valueOf(result.getFloat("Total_elec_cost"));
+        row.add(costElec);
+        String costGas = String.valueOf(result.getFloat("Total_gas_cost"));
+        row.add(costGas);
+        String costTotal = String.valueOf(result.getFloat("Total_cost"));
+        row.add(costTotal);
+        String averageAdvance = String.valueOf(result.getFloat("Average_advance"));
+        row.add(averageAdvance);
+        String exceedance = String.valueOf(result.getFloat("Exceedance"));
+        row.add(exceedance);
+
+        data.add(row);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
+    return tableView;
+  }
 
   private void initElectricityRates()
   {
