@@ -48,8 +48,8 @@ public class Customer {
     "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
     "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
     "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-    "ROUND(SUM(customer.advance / "+monthsInYear+"), 0) as Average_advance, " +
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance / "+monthsInYear+"), 0) as Exceedance " +
+    "ROUND(customer.advance / "+monthsInYear+", 2) as Average_advance, " +
+    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - (customer.advance / "+monthsInYear+"), 2) as Exceedance " +
     //Van tabel (wekelijks) gebruik met joins (rates tabellen en customer tabel)
     //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
     "FROM weekly_usage " +
