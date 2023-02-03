@@ -69,7 +69,9 @@ public class Customer {
     //Geen resultaten ophalen die in de toekomst liggen
     "AND weekly_usage.date_end <= CURRENT_DATE " +
     //Haal het resultaat op per maand
-    "GROUP BY MONTH(weekly_usage.date_start)";
+    "GROUP BY MONTH(weekly_usage.date_start) " +
+    //Sort by most recent start date
+    "ORDER BY MIN(weekly_usage.date_start) DESC";
 
     return createTableView(query);
   }
