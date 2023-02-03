@@ -40,6 +40,7 @@ public class Customer {
     "SELECT " +
     //Selecteer de gewenste kolommen
     "MONTH(weekly_usage.date_start) as Month, " +
+    "CONCAT(MIN(weekly_usage.date_start), ' - ', MAX(weekly_usage.date_end)) as Period, " +
     "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
     "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
     "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
@@ -67,7 +68,7 @@ public class Customer {
     //Geen resultaten ophalen die in de toekomst liggen
     "AND weekly_usage.date_end <= CURRENT_DATE " +
     //Haal het resultaat op per maand
-    "GROUP BY MONTH(weekly_usage.date_start);";
+    "GROUP BY MONTH(weekly_usage.date_start)";
 
     return createTableView(query);
   }
@@ -79,25 +80,28 @@ public class Customer {
 
     ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
 
+    TableColumn<ObservableList<String>, String> column0 = new TableColumn<>("Periode");
+    column0.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(0)));
     TableColumn<ObservableList<String>, String> column1 = new TableColumn<>("Gebruik elek");
-    column1.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(0)));
+    column1.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(1)));
     TableColumn<ObservableList<String>, String> column2 = new TableColumn<>("Gebruik gas");
-    column2.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(1)));
+    column2.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(2)));
     TableColumn<ObservableList<String>, String> column3 = new TableColumn<>("Tarief elek");
-    column3.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(2)));
+    column3.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(3)));
     TableColumn<ObservableList<String>, String> column4 = new TableColumn<>("Tarief gas");
-    column4.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(3)));
+    column4.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(4)));
     TableColumn<ObservableList<String>, String> column5 = new TableColumn<>("Kosten elek");
-    column5.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(4)));
+    column5.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(5)));
     TableColumn<ObservableList<String>, String> column6 = new TableColumn<>("Kosten gas");
-    column6.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(5)));
+    column6.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(6)));
     TableColumn<ObservableList<String>, String> column7 = new TableColumn<>("Kosten totaal");
-    column7.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(6)));
+    column7.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(7)));
     TableColumn<ObservableList<String>, String> column8 = new TableColumn<>("Voorschot");
-    column8.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(7)));
+    column8.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(8)));
     TableColumn<ObservableList<String>, String> column9 = new TableColumn<>("Overschrijding");
-    column9.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(8)));
+    column9.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(9)));
 
+    tableView.getColumns().add(column0);
     tableView.getColumns().add(column1);
     tableView.getColumns().add(column2);
     tableView.getColumns().add(column3);
@@ -116,6 +120,8 @@ public class Customer {
       while (result.next()) {
         ObservableList<String> row = FXCollections.observableArrayList();
 
+        String period = String.valueOf(result.getString("Period"));
+        row.add(period);
         String usageElec = String.valueOf(result.getInt("Total_elec_usage"));
         row.add(usageElec);
         String usageGas = String.valueOf(result.getInt("Total_gas_usage"));
