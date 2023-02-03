@@ -121,25 +121,25 @@ public class Customer {
       while (result.next()) {
         ObservableList<String> row = FXCollections.observableArrayList();
 
-        String period = String.valueOf(result.getString("Period")).equals("0") ? "Onbekend" : String.valueOf(result.getString("Period"));
+        String period = String.valueOf(result.getString("Period"));
         row.add(period);
         String usageElec = String.valueOf(result.getInt("Total_elec_usage"));
         row.add(usageElec);
         String usageGas = String.valueOf(result.getInt("Total_gas_usage"));
         row.add(usageGas);
-        String rateElec = String.valueOf(result.getFloat("Average_elec_rate"));
+        String rateElec = String.valueOf(result.getFloat("Average_elec_rate")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Average_elec_rate"));
         row.add(rateElec);
-        String rateGas = String.valueOf(result.getFloat("Average_gas_rate"));
+        String rateGas = String.valueOf(result.getFloat("Average_gas_rate")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Average_gas_rate"));
         row.add(rateGas);
-        String costElec = String.valueOf(result.getFloat("Total_elec_cost"));
+        String costElec = String.valueOf(result.getFloat("Total_elec_cost")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Total_elec_cost"));
         row.add(costElec);
-        String costGas = String.valueOf(result.getFloat("Total_gas_cost"));
+        String costGas = String.valueOf(result.getFloat("Total_gas_cost")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Total_gas_cost"));
         row.add(costGas);
-        String costTotal = String.valueOf(result.getFloat("Total_cost"));
+        String costTotal = String.valueOf(result.getFloat("Total_cost")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Total_cost"));
         row.add(costTotal);
-        String averageAdvance = String.valueOf(result.getFloat("Average_advance"));
+        String averageAdvance = String.valueOf(result.getFloat("Average_advance")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Average_advance"));
         row.add(averageAdvance);
-        String exceedance = String.valueOf(result.getFloat("Exceedance"));
+        String exceedance = String.valueOf(result.getFloat("Exceedance")).equals("0.0") ? "Onbekend" : String.valueOf(result.getFloat("Exceedance"));
         row.add(exceedance);
 
         data.add(row);
