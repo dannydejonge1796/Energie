@@ -72,27 +72,35 @@ public class Customer {
 
     String query =
     "SELECT " +
-      "MONTH(weekly_usage.date_start) as Month, " +
-      "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
-      "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
-      "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
-      "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
-      "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
-      "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
-      "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-      "ROUND(SUM(customer.advance)/12, 2) as Average_advance, " +
-      "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance)/12, 2) as Exceedance " +
+    //Selecteer de gewenste kolommen
+    "MONTH(weekly_usage.date_start) as Month, " +
+    "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
+    "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
+    "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
+    "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
+    "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
+    "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
+    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
+    "ROUND(SUM(customer.advance)/12, 2) as Average_advance, " +
+    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance)/12, 2) as Exceedance " +
+    //Van tabel (wekelijks) gebruik met joins (rates tabellen en customer tabel)
     "FROM weekly_usage " +
     "JOIN electricity_rate " +
+    //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
     "ON weekly_usage.date_start >= electricity_rate.date_from " +
     "AND weekly_usage.date_end <= electricity_rate.date_to " +
     "JOIN gas_rate " +
+    //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
     "ON weekly_usage.date_start >= gas_rate.date_from " +
     "AND weekly_usage.date_end <= gas_rate.date_to " +
     "JOIN customer " +
+    //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
     "ON weekly_usage.customer_number = customer.number " +
-    "WHERE weekly_usage.customer_number = 123 " +
+    //Alleen resultaten ophalen van deze customer
+    "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
+    //Geen resultaten ophalen die in de toekomst liggen
     "AND weekly_usage.date_end <= CURRENT_DATE " +
+    //Haal het resultaat op per maand
     "GROUP BY MONTH(weekly_usage.date_start);";
 
     ResultSet result = Application.db.getData(query);
