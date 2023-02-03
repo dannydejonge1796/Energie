@@ -48,19 +48,20 @@ public class Customer {
     "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
     "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
     "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-    "ROUND(SUM(customer.advance)/"+monthsInYear+", 2) as Average_advance, " +
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance)/"+monthsInYear+", 2) as Exceedance " +
+    "ROUND(SUM(customer.advance / "+monthsInYear+"), 0) as Average_advance, " +
+    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - SUM(customer.advance / "+monthsInYear+"), 0) as Exceedance " +
     //Van tabel (wekelijks) gebruik met joins (rates tabellen en customer tabel)
+    //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
     "FROM weekly_usage " +
-    "JOIN electricity_rate " +
+    "LEFT JOIN electricity_rate " +
     //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
     "ON weekly_usage.date_start >= electricity_rate.date_from " +
     "AND weekly_usage.date_end <= electricity_rate.date_to " +
-    "JOIN gas_rate " +
+    "LEFT JOIN gas_rate " +
     //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
     "ON weekly_usage.date_start >= gas_rate.date_from " +
     "AND weekly_usage.date_end <= gas_rate.date_to " +
-    "JOIN customer " +
+    "LEFT JOIN customer " +
     //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
     "ON weekly_usage.customer_number = customer.number " +
     //Alleen resultaten ophalen van deze customer
@@ -120,7 +121,7 @@ public class Customer {
       while (result.next()) {
         ObservableList<String> row = FXCollections.observableArrayList();
 
-        String period = String.valueOf(result.getString("Period"));
+        String period = String.valueOf(result.getString("Period")).equals("0") ? "Onbekend" : String.valueOf(result.getString("Period"));
         row.add(period);
         String usageElec = String.valueOf(result.getInt("Total_elec_usage"));
         row.add(usageElec);
