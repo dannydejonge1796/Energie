@@ -40,29 +40,43 @@ public class Customer {
     "SELECT " +
     //Selecteer de gewenste kolommen
     "MONTH(weekly_usage.date_start) as Month, " +
+    //Kolom periode
     "CONCAT(MIN(weekly_usage.date_start), ' - ', MAX(weekly_usage.date_end)) as Period, " +
+    //Kolom elek verbruik
     "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
+    //Kolom gas verbruik
     "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
+    //Kolom gemiddelde elek tarief
     "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
+    //Kolom gemiddelde gas tarief
     "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
+    //Kolom totale elek kosten, de som van verbruik * tarief
     "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
+    //Kolom totale gas kosten, de som van verbruik * tarief
     "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
+    //Kolom totale kosten
     "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
+    //Kolom voorschot / bepaald tijdsbestek
     "ROUND(customer.advance / "+monthsInYear+", 2) as Average_advance, " +
+    //Kolom overschrijding, voorschot - totale kosten
     "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - (customer.advance / "+monthsInYear+"), 2) as Exceedance " +
     //Van tabel (wekelijks) gebruik met joins (rates tabellen en customer tabel)
     //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
     "FROM weekly_usage " +
+    //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
     "LEFT JOIN electricity_rate " +
-    //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
-    "ON weekly_usage.date_start >= electricity_rate.date_from " +
-    "AND weekly_usage.date_end <= electricity_rate.date_to " +
+    "ON electricity_rate.id = (SELECT MAX(id) " +
+    "FROM electricity_rate er " +
+    "WHERE er.date_from <= weekly_usage.date_start " +
+    "AND er.date_to >= weekly_usage.date_end) " +
+    //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
     "LEFT JOIN gas_rate " +
-    //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt
-    "ON weekly_usage.date_start >= gas_rate.date_from " +
-    "AND weekly_usage.date_end <= gas_rate.date_to " +
-    "LEFT JOIN customer " +
+    "ON gas_rate.id = (SELECT MAX(id) " +
+    "FROM gas_rate gr " +
+    "WHERE gr.date_from <= weekly_usage.date_start " +
+    "AND gr.date_to >= weekly_usage.date_end) " +
     //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
+    "LEFT JOIN customer " +
     "ON weekly_usage.customer_number = customer.number " +
     //Alleen resultaten ophalen van deze customer
     "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
