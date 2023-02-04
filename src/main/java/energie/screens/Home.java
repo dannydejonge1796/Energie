@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -44,13 +45,14 @@ public class Home {
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
     grid.setVgap(10);
-    grid.setPadding(new Insets(25, 25, 25, 25));
+    grid.setPadding(new Insets(25, 100, 25, 100));
 
     Text txtCustomerNr = new Text("Voer uw klantnummer in:");
     txtCustomerNr.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
     grid.add(txtCustomerNr, 0, 0);
 
     TextField tfCustomerNr = new TextField();
+    GridPane.setHgrow(tfCustomerNr, Priority.SOMETIMES);
     grid.add(tfCustomerNr, 0, 2);
 
     Button btnCustomerNr = new Button("Ok");
@@ -70,7 +72,7 @@ public class Home {
 
       Customer customer = cR.getCustomer(customerNr);
       if (customer != null) {
-        stage.setScene(new Dashboard(this.stage, customer, 0, "usage").getDashboardScene());
+        stage.setScene(new Dashboard(stage, customer).getDashboardScene());
       } else {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer bestaat niet!");
       }

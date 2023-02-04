@@ -103,7 +103,7 @@ public class Customer {
     //Alleen resultaten ophalen van deze customer
     "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
     //Geen resultaten ophalen die in de toekomst liggen
-    "AND weekly_usage.date_end <= CURRENT_DATE " +
+    "AND weekly_usage.date_start <= CURRENT_DATE " +
     //Haal het resultaat op per bepaalde periode
     groupString +
     //Sort by most recent start date

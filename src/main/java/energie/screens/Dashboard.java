@@ -27,27 +27,19 @@ public class Dashboard {
   private BorderPane borderSettings;
   private ArrayList<Notification> notifications;
   private Stage stage;
-  private Integer selectedTab;
 
-  public Dashboard(Stage primaryStage, Customer customer, Integer selectedTab, String settingCenterPaneIdx)
+  public Dashboard(Stage primaryStage, Customer customer)
   {
     this.stage = primaryStage;
     this.customer = customer;
 
     primaryStage.setTitle("Energie - Welkom " + this.customer.getFirstname() + "!");
 
-    this.selectedTab = selectedTab;
     this.notifications = new ArrayList<>();
 
     determineNotifications();
 
     GridPane settingCenterPane = new GridPane();
-    switch (settingCenterPaneIdx) {
-      case "usage" -> settingCenterPane = addUsagePane();
-      case "elecRate" -> settingCenterPane = addElecRatePane();
-      case "gasRate" -> settingCenterPane = addGasRatePane();
-      case "advance" -> settingCenterPane = addAdvancePane();
-    }
 
     BorderPane borderDash = new BorderPane();
     BorderPane borderSettings = new BorderPane();
@@ -77,11 +69,7 @@ public class Dashboard {
     tabPane.getTabs().addAll(tab1, tab2);
 
     SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-    selectionModel.select(this.selectedTab);
-
-    if (this.selectedTab == 1) {
-      this.borderSettings.setCenter(settingCenterPane);
-    }
+    selectionModel.select(0);
 
     tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
@@ -215,7 +203,7 @@ public class Dashboard {
       customer.addToWeeklyUsages(weeklyUsage);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw weekelijks verbruik is opgeslagen!");
-      stage.setScene(new Dashboard(stage, customer, 1, "usage").getDashboardScene());
+      stage.setScene(new Dashboard(stage, customer).getDashboardScene());
     });
 
     return grid;
@@ -297,7 +285,7 @@ public class Dashboard {
       customer.addToElectricityRates(electricityRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
-      stage.setScene(new Dashboard(stage, customer, 1, "elecRate").getDashboardScene());
+      stage.setScene(new Dashboard(stage, customer).getDashboardScene());
     });
 
     return grid;
@@ -379,7 +367,7 @@ public class Dashboard {
       customer.addToGasRates(gasRate);
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");
-      stage.setScene(new Dashboard(stage, customer, 1, "gasRate").getDashboardScene());
+      stage.setScene(new Dashboard(stage, customer).getDashboardScene());
     });
 
     return grid;
@@ -430,7 +418,7 @@ public class Dashboard {
       this.customer.update();
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw jaarlijkse voorschot is ingesteld!");
-      stage.setScene(new Dashboard(stage, customer, 1, "advance").getDashboardScene());
+      stage.setScene(new Dashboard(stage, customer).getDashboardScene());
     });
 
     return grid;
