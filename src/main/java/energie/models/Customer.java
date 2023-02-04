@@ -14,6 +14,7 @@ import javafx.util.Callback;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -397,6 +398,8 @@ public class Customer {
   {
     this.electricityRates = new ArrayList<>();
 
+    DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
     String query =
             "SELECT * " +
             "FROM electricity_rate " +
@@ -409,7 +412,7 @@ public class Customer {
       while (result.next()) {
         this.electricityRates.add(new ElectricityRate(
                 result.getString("customer_number"),
-                (double) result.getFloat("rate"),
+                Double.parseDouble(decimalFormat.format(result.getFloat("rate")).replace(',', '.')),
                 result.getDate("date_from").toLocalDate(),
                 result.getDate("date_to").toLocalDate()
         ));
@@ -423,6 +426,8 @@ public class Customer {
   {
     this.gasRates = new ArrayList<>();
 
+    DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
     String query =
             "SELECT * " +
             "FROM gas_rate " +
@@ -435,7 +440,7 @@ public class Customer {
       while (result.next()) {
         this.gasRates.add(new GasRate(
                 result.getString("customer_number"),
-                (double) result.getFloat("rate"),
+                Double.parseDouble(decimalFormat.format(result.getFloat("rate")).replace(',', '.')),
                 result.getDate("date_from").toLocalDate(),
                 result.getDate("date_to").toLocalDate()
         ));
