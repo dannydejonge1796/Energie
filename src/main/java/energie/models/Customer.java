@@ -197,6 +197,32 @@ public class Customer {
     return  result;
   }
 
+  public ElectricityRate getCurrentElecRate()
+  {
+    ElectricityRate result = null;
+
+    for (ElectricityRate electricityRate : this.electricityRates) {
+      if (!LocalDate.now().isBefore(electricityRate.getDateFrom()) && !LocalDate.now().isAfter(electricityRate.getDateTo())) {
+        result = electricityRate;
+      }
+    }
+
+    return result;
+  }
+
+  public GasRate getCurrentGasRate()
+  {
+    GasRate result = null;
+
+    for (GasRate gasRate : this.gasRates) {
+      if (!LocalDate.now().isBefore(gasRate.getDateFrom()) && !LocalDate.now().isAfter(gasRate.getDateTo())) {
+        result = gasRate;
+      }
+    }
+
+    return result;
+  }
+
   private void initElectricityRates()
   {
     this.electricityRates = new ArrayList<>();

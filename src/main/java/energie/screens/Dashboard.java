@@ -565,10 +565,8 @@ public class Dashboard {
     return dashboardScene;
   }
 
-  public void determineNotifications() {
-
-    LocalDate now = LocalDate.now();
-
+  public void determineNotifications()
+  {
     Double advance = customer.getAdvance();
     if (advance <= 0) {
       String txtNotification = "U heeft nog geen jaarlijks voorschot ingevoerd!";
@@ -576,33 +574,27 @@ public class Dashboard {
       notifications.add(notification);
     }
 
-    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
-    if (electricityRates.isEmpty()) {
+    if (customer.getElectricityRates().isEmpty()) {
       String txtNotification = "U heeft nog geen stroomtarief ingevoerd!";
       Notification notification = new Notification(txtNotification);
       notifications.add(notification);
     } else {
-      int lastIdx = electricityRates.size() - 1;
-      ElectricityRate latestElecRate = electricityRates.get(lastIdx);
-      LocalDate dateTo = latestElecRate.getDateTo();
-      if (dateTo.isBefore(now)) {
-        String txtNotification = "De einddatum van uw stroomtarief is verlopen!";
+      ElectricityRate current = customer.getCurrentElecRate();
+      if (current == null) {
+        String txtNotification = "Uw ingevoerde stroomtarief is verlopen!";
         Notification notification = new Notification(txtNotification);
         notifications.add(notification);
       }
     }
 
-    ArrayList<GasRate> gasRates = customer.getGasRates();
     if (customer.getGasRates().isEmpty()) {
       String txtNotification = "U heeft nog geen gastarief ingevoerd!";
       Notification notification = new Notification(txtNotification);
       notifications.add(notification);
     } else {
-      int lastIdx = gasRates.size() - 1;
-      GasRate latestGasRate = gasRates.get(lastIdx);
-      LocalDate dateTo = latestGasRate.getDateTo();
-      if (dateTo.isBefore(now)) {
-        String txtNotification = "De einddatum van uw gastarief is verlopen!";
+      GasRate current = customer.getCurrentGasRate();
+      if (current == null) {
+        String txtNotification = "Uw ingevoerde gastarief is verlopen!";
         Notification notification = new Notification(txtNotification);
         notifications.add(notification);
       }
