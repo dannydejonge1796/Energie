@@ -44,19 +44,10 @@ public class Register {
   {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
-    grid.setPadding(new Insets(40, 40, 40, 40));
+    grid.setPadding(new Insets(40, 100, 40, 100));
     grid.setHgap(10);
     grid.setVgap(10);
 
-    // columnOneConstraints will be applied to all the nodes placed in column one.
-    ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
-    columnOneConstraints.setHalignment(HPos.RIGHT);
-
-    // columnTwoConstraints will be applied to all the nodes placed in column two.
-    ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
-    columnTwoConstrains.setHgrow(Priority.ALWAYS);
-
-    grid.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
 
     // Header label toevoegen
     Label headerLabel = new Label("Registreren");
@@ -71,7 +62,7 @@ public class Register {
 
     // Voornaam textfield toevoegen
     TextField tfFirstname = new TextField();
-    tfFirstname.setPrefHeight(40);
+    GridPane.setHgrow(tfFirstname, Priority.SOMETIMES);
     grid.add(tfFirstname,1,2);
 
     // Achternaam label toevoegen
@@ -80,12 +71,21 @@ public class Register {
 
     // Achternaam textfield toevoegen
     TextField tfLastname = new TextField();
-    tfLastname.setPrefHeight(40);
     grid.add(tfLastname,1,3);
 
     // Voeg submit knop toe
+    Button btnBack = new Button("Terug");
+    btnBack.setPrefWidth(100);
+    grid.add(btnBack, 0, 5, 2, 1);
+    GridPane.setHalignment(btnBack, HPos.LEFT);
+    GridPane.setMargin(btnBack, new Insets(20, 0,20,0));
+
+    btnBack.setOnAction(e -> {
+      this.stage.setScene(new Home(this.stage, cR).getHomeScene());
+    });
+
+    // Voeg submit knop toe
     Button btnRegister = new Button("Registreer");
-    btnRegister.setPrefHeight(40);
     btnRegister.setPrefWidth(100);
     grid.add(btnRegister, 0, 5, 2, 1);
     GridPane.setHalignment(btnRegister, HPos.RIGHT);
