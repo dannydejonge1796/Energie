@@ -4,8 +4,13 @@ import energie.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
@@ -31,6 +36,120 @@ public class Customer {
     initElectricityRates();
     initGasRates();
     initWeeklyUsage();
+  }
+
+  public TableView<WeeklyUsage> getTableUsage()
+  {
+    TableView<WeeklyUsage> table = new TableView<>();
+    table.setItems(FXCollections.observableArrayList(this.weeklyUsages));
+
+    TableColumn<WeeklyUsage, String> colUsageElec = new TableColumn<>("Stroom gebruik");
+    colUsageElec.setCellValueFactory(new PropertyValueFactory<>("usageElec"));
+
+    TableColumn<WeeklyUsage, String> colUsageGas = new TableColumn<>("Gas gebruik");
+    colUsageGas.setCellValueFactory(new PropertyValueFactory<>("usageGas"));
+
+    TableColumn<WeeklyUsage, String> colDateStart = new TableColumn<>("Start datum");
+    colDateStart.setCellValueFactory(new PropertyValueFactory<>("dateStart"));
+
+    TableColumn<WeeklyUsage, String> colDateEnd = new TableColumn<>("Eind datum");
+    colDateEnd.setCellValueFactory(new PropertyValueFactory<>("dateEnd"));
+
+    TableColumn<WeeklyUsage, Void> deleteCol = new TableColumn<>("Delete");
+    deleteCol.setCellFactory(new Callback<>() {
+      @Override
+      public TableCell<WeeklyUsage, Void> call(final TableColumn<WeeklyUsage, Void> param) {
+        final TableCell<WeeklyUsage, Void> cell = new TableCell<>() {
+          private final Button deleteButton = new Button("Delete");
+
+          {
+            deleteButton.setOnAction((ActionEvent event) -> {
+              WeeklyUsage weeklyUsage = getTableView().getItems().get(getIndex());
+              weeklyUsage.destroy();
+              weeklyUsages.remove(weeklyUsage);
+              table.getItems().remove(weeklyUsage);
+            });
+          }
+
+          @Override
+          public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+              setGraphic(null);
+            } else {
+              setGraphic(deleteButton);
+            }
+          }
+        };
+        return cell;
+      }
+    });
+
+    table.getColumns().add(colUsageElec);
+    table.getColumns().add(colUsageGas);
+    table.getColumns().add(colDateStart);
+    table.getColumns().add(colDateEnd);
+    table.getColumns().add(deleteCol);
+
+    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    table.autosize();
+
+    return table;
+  }
+
+  public TableView<ElectricityRate> getTableElec()
+  {
+    TableView<ElectricityRate> table = new TableView<>();
+    table.setItems(FXCollections.observableArrayList(this.electricityRates));
+
+    TableColumn<ElectricityRate, String> colRate = new TableColumn<>("Stroom tarief");
+    colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
+
+    TableColumn<ElectricityRate, String> colDateFrom = new TableColumn<>("Datum vanaf");
+    colDateFrom.setCellValueFactory(new PropertyValueFactory<>("dateFrom"));
+
+    TableColumn<ElectricityRate, String> colDateTo = new TableColumn<>("Datum tot");
+    colDateTo.setCellValueFactory(new PropertyValueFactory<>("dateTo"));
+
+    TableColumn<ElectricityRate, Void> deleteCol = new TableColumn<>("Delete");
+    deleteCol.setCellFactory(new Callback<>() {
+      @Override
+      public TableCell<ElectricityRate, Void> call(final TableColumn<ElectricityRate, Void> param) {
+        final TableCell<ElectricityRate, Void> cell = new TableCell<>() {
+          private final Button deleteButton = new Button("Delete");
+
+          {
+            deleteButton.setOnAction((ActionEvent event) -> {
+              ElectricityRate electricityRate = getTableView().getItems().get(getIndex());
+              electricityRate.destroy();
+              electricityRates.remove(electricityRate);
+              table.getItems().remove(electricityRate);
+            });
+          }
+
+          @Override
+          public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+              setGraphic(null);
+            } else {
+              setGraphic(deleteButton);
+            }
+          }
+        };
+        return cell;
+      }
+    });
+
+    table.getColumns().add(colRate);
+    table.getColumns().add(colDateFrom);
+    table.getColumns().add(colDateTo);
+    table.getColumns().add(deleteCol);
+
+    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    table.autosize();
+
+    return table;
   }
 
   public TableView<ObservableList<String>> getOverview(String selectedPeriod)
@@ -280,7 +399,8 @@ public class Customer {
     String query =
             "SELECT * " +
             "FROM weekly_usage " +
-            "WHERE customer_number = '"+customerNr+"'";
+            "WHERE customer_number = '"+customerNr+"' " +
+            "ORDER BY weekly_usage.date_start DESC";
 
     ResultSet result = Application.db.getData(query);
 

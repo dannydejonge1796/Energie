@@ -178,6 +178,8 @@ public class Dashboard {
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
 
+    grid.add(customer.getTableUsage(), 0, 5, 2, 1);
+
     btnSave.setOnAction(e -> {
 
       String usageElec = tfUsageElec.getText();
@@ -254,7 +256,7 @@ public class Dashboard {
     Label lblDateFrom = new Label("Datum vanaf:");
     grid.add(lblDateFrom, 0, 2);
 
-    DatePicker dpDateFrom = new DatePicker();
+    DatePicker dpDateFrom = new DatePicker(LocalDate.now());
     grid.add(dpDateFrom, 1, 2);
 
     ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
@@ -275,7 +277,7 @@ public class Dashboard {
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo, 0, 3);
 
-    DatePicker dpDateTo =  new DatePicker();
+    DatePicker dpDateTo =  new DatePicker(LocalDate.now().plusMonths(6));
     grid.add(dpDateTo, 1, 3);
 
     dpDateTo.setDayCellFactory(picker -> new DateCell() {
@@ -368,7 +370,7 @@ public class Dashboard {
     Label lblDateFrom = new Label("Datum vanaf:");
     grid.add(lblDateFrom,0,2);
 
-    DatePicker dpDateFrom = new DatePicker();
+    DatePicker dpDateFrom = new DatePicker(LocalDate.now());
     grid.add(dpDateFrom,1,2);
 
     ArrayList<GasRate> gasRates = customer.getGasRates();
@@ -389,7 +391,7 @@ public class Dashboard {
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo,0,3);
 
-    DatePicker dpDateTo = new DatePicker();
+    DatePicker dpDateTo = new DatePicker(LocalDate.now().plusMonths(6));
     grid.add(dpDateTo,1,3);
 
     dpDateTo.setDayCellFactory(picker -> new DateCell() {

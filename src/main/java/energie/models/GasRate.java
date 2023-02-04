@@ -19,6 +19,13 @@ public class GasRate {
     this.dateTo = dateTo;
   }
 
+  public void destroy()
+  {
+    String query = "DELETE FROM gas_rate WHERE date_from = '" + this.dateFrom + "' " +
+            "AND date_to = '" + this.dateTo + "'";
+    Application.db.storeData(query);
+  }
+
   public void store()
   {
     String query =

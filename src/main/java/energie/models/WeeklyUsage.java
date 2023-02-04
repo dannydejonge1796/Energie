@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public class WeeklyUsage {
 
+  private Integer id;
   private String customerNr;
   private Integer usageElec;
   private Integer usageGas;
@@ -19,6 +20,13 @@ public class WeeklyUsage {
     this.usageGas = usageGas;
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
+  }
+
+  public void destroy()
+  {
+    String query = "DELETE FROM weekly_usage WHERE date_start = '" + this.dateStart + "' " +
+            "AND date_end = '" + this.dateEnd + "'";
+    Application.db.storeData(query);
   }
 
   public void store()
