@@ -10,6 +10,7 @@ import javafx.scene.control.TableView;
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Customer {
@@ -85,7 +86,7 @@ public class Customer {
     "FROM electricity_rate er " +
     "WHERE er.date_from <= weekly_usage.date_start " +
     "AND er.date_to >= weekly_usage.date_end " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
+    //Als het tarief veranderd midden in de periode van een wekelijks gebruik dan geldt het oude tarief voor die periode
     "OR (er.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
     "AND er.date_from <= weekly_usage.date_start) " +
     //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
@@ -94,7 +95,7 @@ public class Customer {
     "FROM gas_rate gr " +
     "WHERE (gr.date_from <= weekly_usage.date_start " +
     "AND gr.date_to >= weekly_usage.date_end) " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
+    //Als het tarief veranderd midden in de periode van een wekelijks gebruik dan geldt het oude tarief voor die periode
     "OR (gr.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
     "AND gr.date_from <= weekly_usage.date_start) " +
     //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
@@ -182,6 +183,18 @@ public class Customer {
     }
 
     return tableView;
+  }
+
+  public WeeklyUsage getCurrentWeeklyUsage()
+  {
+    WeeklyUsage result = null;
+
+    for (WeeklyUsage weeklyUsage : this.weeklyUsages) {
+      if (weeklyUsage.getDateEnd().equals(LocalDate.now())) {
+
+      }
+    }
+
   }
 
   private void initElectricityRates()

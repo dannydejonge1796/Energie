@@ -48,7 +48,6 @@ public class Register {
     grid.setHgap(10);
     grid.setVgap(10);
 
-
     // Header label toevoegen
     Label headerLabel = new Label("Registreren");
     headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
@@ -128,6 +127,7 @@ public class Register {
       customer.store();
 
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "U bent geregistreerd " + customer.getFirstname() + " " + customer.getLastname() + "! Uw klantnummer is: " + customer.getCustomerNr() + ".");
+      System.out.println("Uw klantnummer is: " + customer.getCustomerNr());
       stage.setScene(new Home(stage, cR).getHomeScene());
     });
 

@@ -154,12 +154,24 @@ public class Dashboard {
     grid.add(lblDateStart, 0, 3);
 
     DatePicker dpDateStart = new DatePicker();
+    dpDateStart.setValue(LocalDate.now().minusWeeks(1));
     grid.add(dpDateStart, 1, 3);
+
+    ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
 
     dpDateStart.setDayCellFactory(picker -> new DateCell() {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
+        //Er kan alleen een datum gekozen worden die minimaal 7 dagen geleden is.
         setDisable(empty || date.isAfter(LocalDate.now().minusWeeks(1)));
+
+        for (WeeklyUsage weeklyUsage : weeklyUsages) {
+          //Een periode van een wekelijks gebruik kan niet opnieuw worden geselecteerd
+          if (!date.isBefore(weeklyUsage.getDateStart()) && !date.isAfter(weeklyUsage.getDateEnd())) {
+            setDisable(true);
+            break;
+          }
+        }
       }
     });
 
@@ -194,6 +206,18 @@ public class Dashboard {
       if (dateStart == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de start datum in!");
         return;
+      }
+
+      if (dateStart.isAfter(LocalDate.now().minusWeeks(1))) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Deze datum is nog niet beschikbaar!");
+        return;
+      }
+
+      for (WeeklyUsage weeklyUsage : weeklyUsages) {
+        if (!dateStart.isBefore(weeklyUsage.getDateStart()) && !dateStart.isAfter(weeklyUsage.getDateEnd())) {
+          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een wekelijks gebruik ingevoerd op deze datum!");
+          return;
+        }
       }
 
       LocalDate dateEnd = dateStart.plusWeeks(1);
