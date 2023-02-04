@@ -148,20 +148,17 @@ public class Dashboard {
     GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
     grid.add(headerLabel, 0, 0, 2, 1);
 
-    ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
-    WeeklyUsage latestWeeklyUsage = weeklyUsages.size() - 1 >= 0 ? weeklyUsages.get(weeklyUsages.size() - 1) : null;
-
     Label lblUsageElec = new Label("Stroomverbruik:");
     grid.add(lblUsageElec, 0, 1);
 
-    TextField tfUsageElec = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageElec().toString() : "");
+    TextField tfUsageElec = new TextField();
     GridPane.setHgrow(tfUsageElec, Priority.SOMETIMES);
     grid.add(tfUsageElec, 1, 1);
 
     Label lblUsageGas = new Label("Gasverbruik:");
     grid.add(lblUsageGas, 0, 2);
 
-    TextField tfUsageGas = new TextField(latestWeeklyUsage != null ? latestWeeklyUsage.getUsageGas().toString() : "");
+    TextField tfUsageGas = new TextField();
     GridPane.setHgrow(tfUsageGas, Priority.SOMETIMES);
     grid.add(tfUsageGas, 1, 2);
 
@@ -171,27 +168,22 @@ public class Dashboard {
     DatePicker dpDateStart = new DatePicker();
     grid.add(dpDateStart, 1, 3);
 
-    Label lblDateEnd = new Label("Einddatum:");
-    grid.add(lblDateEnd, 0, 4);
-
-    DatePicker dpDateEnd = new DatePicker();
-    grid.add(dpDateEnd, 1, 4);
-
-    if (latestWeeklyUsage != null) {
-      dpDateStart.setValue(latestWeeklyUsage.getDateStart());
-      dpDateEnd.setValue(latestWeeklyUsage.getDateEnd());
-    }
+    dpDateStart.setDayCellFactory(picker -> new DateCell() {
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        setDisable(empty || date.isAfter(LocalDate.now().minusWeeks(1)));
+      }
+    });
 
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
-    grid.add(btnSave, 1, 5);
+    grid.add(btnSave, 1, 4);
 
     btnSave.setOnAction(e -> {
 
       String usageElec = tfUsageElec.getText();
       String usageGas = tfUsageGas.getText();
       LocalDate dateStart = dpDateStart.getValue();
-      LocalDate dateEnd = dpDateEnd.getValue();
 
       if(usageElec.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer uw stroomverbruik in!");
@@ -216,10 +208,7 @@ public class Dashboard {
         return;
       }
 
-      if(dateEnd == null) {
-        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de eind datum in!");
-        return;
-      }
+      LocalDate dateEnd = dateStart.plusWeeks(1);
 
       WeeklyUsage weeklyUsage = new WeeklyUsage(this.customer.getCustomerNr(), Integer.parseInt(usageElec), Integer.parseInt(usageGas), dateStart, dateEnd);
       weeklyUsage.store();
