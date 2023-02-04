@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -38,8 +39,6 @@ public class Dashboard {
     this.notifications = new ArrayList<>();
 
     determineNotifications();
-
-    GridPane settingCenterPane = new GridPane();
 
     BorderPane borderDash = new BorderPane();
     BorderPane borderSettings = new BorderPane();
@@ -245,15 +244,10 @@ public class Dashboard {
     GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
     grid.add(headerLabel, 0, 0, 2, 1);
 
-    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
-    ElectricityRate latestElecRate = electricityRates.size() - 1 >= 0 ? electricityRates.get(electricityRates.size() - 1) : null;
-
     Label lblRate = new Label("Tarief stroom:");
     grid.add(lblRate, 0, 1);
 
-    DecimalFormat df = getDecimalFormat();
-
-    TextField tfRate = new TextField(latestElecRate != null ? df.format(latestElecRate.getRate()) : "");
+    TextField tfRate = new TextField();
     GridPane.setHgrow(tfRate, Priority.SOMETIMES);
     grid.add(tfRate, 1, 1);
 
@@ -263,16 +257,39 @@ public class Dashboard {
     DatePicker dpDateFrom = new DatePicker();
     grid.add(dpDateFrom, 1, 2);
 
+    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
+
+    dpDateFrom.setDayCellFactory(picker -> new DateCell() {
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        for (ElectricityRate electricityRate : electricityRates) {
+          //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
+          if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
+            setDisable(true);
+            break;
+          }
+        }
+      }
+    });
+
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo, 0, 3);
 
     DatePicker dpDateTo =  new DatePicker();
     grid.add(dpDateTo, 1, 3);
 
-    if (latestElecRate != null) {
-      dpDateFrom.setValue(latestElecRate.getDateFrom());
-      dpDateTo.setValue(latestElecRate.getDateTo());
-    }
+    dpDateTo.setDayCellFactory(picker -> new DateCell() {
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        for (ElectricityRate electricityRate : electricityRates) {
+          //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
+          if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
+            setDisable(true);
+            break;
+          }
+        }
+      }
+    });
 
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
@@ -299,9 +316,23 @@ public class Dashboard {
         return;
       }
 
+      for (ElectricityRate electricityRate : electricityRates) {
+        if (!dateFrom.isBefore(electricityRate.getDateFrom()) && !dateFrom.isAfter(electricityRate.getDateTo())) {
+          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
+          return;
+        }
+      }
+
       if (dateTo == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het stroomtarief in!");
         return;
+      }
+
+      for (ElectricityRate electricityRate : electricityRates) {
+        if (!dateTo.isBefore(electricityRate.getDateFrom()) && !dateTo.isAfter(electricityRate.getDateTo())) {
+          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
+          return;
+        }
       }
 
       ElectricityRate electricityRate = new ElectricityRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
@@ -327,15 +358,10 @@ public class Dashboard {
     GridPane.setMargin(headerLabel, new Insets(0,0,10,0));
     grid.add(headerLabel, 0, 0, 2, 1);
 
-    ArrayList<GasRate> gasRates = customer.getGasRates();
-    GasRate latestGasRate = gasRates.size() - 1 >= 0 ? gasRates.get(gasRates.size() - 1) : null;
-
     Label lblRate = new Label("Tarief gas:");
     grid.add(lblRate, 0, 1);
 
-    DecimalFormat df = getDecimalFormat();
-
-    TextField tfRate = new TextField(latestGasRate != null ? df.format(latestGasRate.getRate()) : "");
+    TextField tfRate = new TextField();
     GridPane.setHgrow(tfRate, Priority.SOMETIMES);
     grid.add(tfRate, 1, 1);
 
@@ -345,16 +371,39 @@ public class Dashboard {
     DatePicker dpDateFrom = new DatePicker();
     grid.add(dpDateFrom,1,2);
 
+    ArrayList<GasRate> gasRates = customer.getGasRates();
+
+    dpDateFrom.setDayCellFactory(picker -> new DateCell() {
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        for (GasRate gasRate : gasRates) {
+          //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
+          if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
+            setDisable(true);
+            break;
+          }
+        }
+      }
+    });
+
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo,0,3);
 
     DatePicker dpDateTo = new DatePicker();
     grid.add(dpDateTo,1,3);
 
-    if (latestGasRate != null) {
-      dpDateFrom.setValue(latestGasRate.getDateFrom());
-      dpDateTo.setValue(latestGasRate.getDateTo());
-    }
+    dpDateTo.setDayCellFactory(picker -> new DateCell() {
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        for (GasRate gasRate : gasRates) {
+          //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
+          if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
+            setDisable(true);
+            break;
+          }
+        }
+      }
+    });
 
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
@@ -381,9 +430,23 @@ public class Dashboard {
         return;
       }
 
+      for (GasRate gasRate : gasRates) {
+        if (!dateFrom.isBefore(gasRate.getDateFrom()) && !dateFrom.isAfter(gasRate.getDateTo())) {
+          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
+          return;
+        }
+      }
+
       if (dateTo == null) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de einddatum van het gastarief in!");
         return;
+      }
+
+      for (GasRate gasRate : gasRates) {
+        if (!dateTo.isBefore(gasRate.getDateFrom()) && !dateTo.isAfter(gasRate.getDateTo())) {
+          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
+          return;
+        }
       }
 
       GasRate gasRate = new GasRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
@@ -545,7 +608,6 @@ public class Dashboard {
       }
     }
 
-    ArrayList<WeeklyUsage> weeklyUsages = customer.getWeeklyUsages();
     if (customer.getWeeklyUsages().isEmpty()) {
       String txtNotification = "U heeft deze week nog geen wekelijks verbruik ingevoerd!";
       Notification notification = new Notification(txtNotification);
