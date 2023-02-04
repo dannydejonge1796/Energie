@@ -190,11 +190,11 @@ public class Customer {
     WeeklyUsage result = null;
 
     for (WeeklyUsage weeklyUsage : this.weeklyUsages) {
-      if (weeklyUsage.getDateEnd().equals(LocalDate.now())) {
-
+      if (!weeklyUsage.getDateEnd().isBefore(LocalDate.now().minusWeeks(1)) && !weeklyUsage.getDateEnd().isAfter(LocalDate.now())) {
+        result = weeklyUsage;
       }
     }
-
+    return  result;
   }
 
   private void initElectricityRates()

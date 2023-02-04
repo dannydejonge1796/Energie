@@ -551,10 +551,8 @@ public class Dashboard {
       Notification notification = new Notification(txtNotification);
       notifications.add(notification);
     } else {
-      int lastIdx = weeklyUsages.size() - 1;
-      WeeklyUsage weeklyUsage = weeklyUsages.get(lastIdx);
-      LocalDate dateEnd = weeklyUsage.getDateEnd();
-      if (dateEnd.isBefore(now)) {
+      WeeklyUsage current = customer.getCurrentWeeklyUsage();
+      if (current == null) {
         String txtNotification = "U heeft deze week nog geen wekelijks verbruik ingevoerd!";
         Notification notification = new Notification(txtNotification);
         notifications.add(notification);
