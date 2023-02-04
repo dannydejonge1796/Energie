@@ -399,8 +399,9 @@ public class Customer {
 
     String query =
             "SELECT * " +
-                    "FROM electricity_rate " +
-                    "WHERE customer_number = '"+customerNr+"'";
+            "FROM electricity_rate " +
+            "WHERE customer_number = '"+customerNr+"' " +
+            "ORDER BY electricity_rate.date_from DESC";
 
     ResultSet result = Application.db.getData(query);
 
@@ -425,7 +426,8 @@ public class Customer {
     String query =
             "SELECT * " +
             "FROM gas_rate " +
-            "WHERE customer_number = '"+customerNr+"'";
+            "WHERE customer_number = '"+customerNr+"' " +
+            "ORDER BY gas_rate.date_from DESC";
 
     ResultSet result = Application.db.getData(query);
 
