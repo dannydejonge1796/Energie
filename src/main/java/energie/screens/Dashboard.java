@@ -72,6 +72,12 @@ public class Dashboard {
 
     tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+    tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+      if (newTab.equals(tab1)) {
+        stage.setScene(new Dashboard(stage, customer).getDashboardScene());
+      }
+    });
+
     this.dashboardScene = new Scene(tabPane, 760, 480);
   }
 
