@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
@@ -23,9 +22,9 @@ import java.util.Random;
 
 public class Register {
 
-  private Stage stage;
-  private Scene registerScene;
-  private CustomerRegister cR;
+  private final Stage stage;
+  private final Scene registerScene;
+  private final CustomerRegister cR;
 
   public Register(Stage primaryStage, CustomerRegister customerRegister)
   {
@@ -79,9 +78,7 @@ public class Register {
     GridPane.setHalignment(btnBack, HPos.LEFT);
     GridPane.setMargin(btnBack, new Insets(20, 0,20,0));
 
-    btnBack.setOnAction(e -> {
-      this.stage.setScene(new Home(this.stage, cR).getHomeScene());
-    });
+    btnBack.setOnAction(e -> this.stage.setScene(new Home(this.stage, cR).getHomeScene()));
 
     // Voeg submit knop toe
     Button btnRegister = new Button("Registreer");

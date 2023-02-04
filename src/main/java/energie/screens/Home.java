@@ -2,7 +2,6 @@ package energie.screens;
 
 import energie.models.Customer;
 import energie.models.CustomerRegister;
-import energie.models.Database;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,9 +19,9 @@ import javafx.stage.Window;
 
 public class Home {
 
-  private Stage stage;
-  private Scene homeScene;
-  private CustomerRegister cR;
+  private final Stage stage;
+  private final Scene homeScene;
+  private final CustomerRegister cR;
 
   public Home(Stage primaryStage, CustomerRegister customerRegister)
   {

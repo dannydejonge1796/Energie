@@ -1,14 +1,5 @@
 package energie.models;
 
-public class Notification {
+public record Notification(String txtNotification) {
 
-  private String txtNotification;
-
-  public Notification(String txtNotification) {
-    this.txtNotification = txtNotification;
-  }
-
-  public String getTxtNotification() {
-    return txtNotification;
-  }
 }

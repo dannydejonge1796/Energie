@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -23,11 +22,11 @@ import java.util.ArrayList;
 
 public class Dashboard {
 
-  private Customer customer;
-  private Scene dashboardScene;
-  private BorderPane borderSettings;
-  private ArrayList<Notification> notifications;
-  private Stage stage;
+  private final Customer customer;
+  private final Scene dashboardScene;
+  private final BorderPane borderSettings;
+  private final ArrayList<Notification> notifications;
+  private final Stage stage;
 
   public Dashboard(Stage primaryStage, Customer customer)
   {
@@ -98,7 +97,7 @@ public class Dashboard {
       vboxNotif.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
 
       for (Notification notification : this.notifications) {
-        Text ntfctnTxt = new Text("- " + notification.getTxtNotification());
+        Text ntfctnTxt = new Text("- " + notification.txtNotification());
         ntfctnTxt.setFont(Font.font("Arial", FontWeight.MEDIUM, 12));
         vboxNotif.getChildren().add(ntfctnTxt);
       }

@@ -6,12 +6,11 @@ import java.time.LocalDate;
 
 public class WeeklyUsage {
 
-  private Integer id;
-  private String customerNr;
-  private Integer usageElec;
-  private Integer usageGas;
-  private LocalDate dateStart;
-  private LocalDate dateEnd;
+  private final String customerNr;
+  private final Integer usageElec;
+  private final Integer usageGas;
+  private final LocalDate dateStart;
+  private final LocalDate dateEnd;
 
   public WeeklyUsage(String customerNr, Integer usageElec, Integer usageGas, LocalDate dateStart, LocalDate dateEnd)
   {

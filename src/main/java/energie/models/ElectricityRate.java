@@ -6,10 +6,10 @@ import java.time.LocalDate;
 
 public class ElectricityRate {
 
-  private String customerNr;
-  private Double rate;
-  private LocalDate dateFrom;
-  private LocalDate dateTo;
+  private final String customerNr;
+  private final Double rate;
+  private final LocalDate dateFrom;
+  private final LocalDate dateTo;
 
   public ElectricityRate(String customerNr, Double rate, LocalDate dateFrom, LocalDate dateTo)
   {

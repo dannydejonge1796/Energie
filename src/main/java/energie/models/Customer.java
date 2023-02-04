@@ -12,7 +12,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -20,9 +19,9 @@ import java.util.ArrayList;
 
 public class Customer {
 
-  private String customerNr;
-  private String firstname;
-  private String lastname;
+  private final String customerNr;
+  private final String firstname;
+  private final String lastname;
   private Double advance;
   private ArrayList<ElectricityRate> electricityRates;
   private ArrayList<GasRate> gasRates;
@@ -59,7 +58,7 @@ public class Customer {
     deleteCol.setCellFactory(new Callback<>() {
       @Override
       public TableCell<WeeklyUsage, Void> call(final TableColumn<WeeklyUsage, Void> param) {
-        final TableCell<WeeklyUsage, Void> cell = new TableCell<>() {
+        return new TableCell<>() {
           private final Button deleteButton = new Button("Delete");
 
           {
@@ -81,7 +80,6 @@ public class Customer {
             }
           }
         };
-        return cell;
       }
     });
 
