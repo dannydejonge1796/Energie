@@ -297,6 +297,8 @@ public class Dashboard {
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
 
+    grid.add(customer.getTableElec(), 0, 5, 2, 1);
+
     btnSave.setOnAction(e -> {
 
       String rate = tfRate.getText();
@@ -410,6 +412,8 @@ public class Dashboard {
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
+
+    grid.add(customer.getTableGas(), 0, 5, 2, 1);
 
     btnSave.setOnAction(e -> {
 

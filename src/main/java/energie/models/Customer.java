@@ -115,7 +115,7 @@ public class Customer {
     deleteCol.setCellFactory(new Callback<>() {
       @Override
       public TableCell<ElectricityRate, Void> call(final TableColumn<ElectricityRate, Void> param) {
-        final TableCell<ElectricityRate, Void> cell = new TableCell<>() {
+        return new TableCell<>() {
           private final Button deleteButton = new Button("Delete");
 
           {
@@ -137,7 +137,60 @@ public class Customer {
             }
           }
         };
-        return cell;
+      }
+    });
+
+    table.getColumns().add(colRate);
+    table.getColumns().add(colDateFrom);
+    table.getColumns().add(colDateTo);
+    table.getColumns().add(deleteCol);
+
+    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    table.autosize();
+
+    return table;
+  }
+
+  public TableView<GasRate> getTableGas()
+  {
+    TableView<GasRate> table = new TableView<>();
+    table.setItems(FXCollections.observableArrayList(this.gasRates));
+
+    TableColumn<GasRate, String> colRate = new TableColumn<>("Gas tarief");
+    colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
+
+    TableColumn<GasRate, String> colDateFrom = new TableColumn<>("Datum vanaf");
+    colDateFrom.setCellValueFactory(new PropertyValueFactory<>("dateFrom"));
+
+    TableColumn<GasRate, String> colDateTo = new TableColumn<>("Datum tot");
+    colDateTo.setCellValueFactory(new PropertyValueFactory<>("dateTo"));
+
+    TableColumn<GasRate, Void> deleteCol = new TableColumn<>("Delete");
+    deleteCol.setCellFactory(new Callback<>() {
+      @Override
+      public TableCell<GasRate, Void> call(final TableColumn<GasRate, Void> param) {
+        return new TableCell<>() {
+          private final Button deleteButton = new Button("Delete");
+
+          {
+            deleteButton.setOnAction((ActionEvent event) -> {
+              GasRate gasRate = getTableView().getItems().get(getIndex());
+              gasRate.destroy();
+              gasRates.remove(gasRate);
+              table.getItems().remove(gasRate);
+            });
+          }
+
+          @Override
+          public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+              setGraphic(null);
+            } else {
+              setGraphic(deleteButton);
+            }
+          }
+        };
       }
     });
 
