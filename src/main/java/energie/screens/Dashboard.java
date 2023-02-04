@@ -113,7 +113,36 @@ public class Dashboard {
       vBox.getChildren().add(vboxNotif);
     }
 
-    vBox.getChildren().add(this.customer.getTableMonth());
+    ComboBox<String> comboPeriod = new ComboBox<>();
+    comboPeriod.getItems().add("Wekelijks");
+    comboPeriod.getItems().add("Maandelijks");
+    comboPeriod.getItems().add("Jaarlijks");
+
+    comboPeriod.getSelectionModel().select(0);
+
+    vBox.getChildren().add(comboPeriod);
+
+    VBox vboxTable = new VBox();
+    vboxTable.getChildren().add(this.customer.getTableWeek());
+
+    vBox.getChildren().add(vboxTable);
+
+    comboPeriod.setOnAction(e -> {
+      String comboValue = comboPeriod.getValue();
+      vboxTable.getChildren().clear();
+
+      if (comboValue.equals("Wekelijks")) {
+        vboxTable.getChildren().add(this.customer.getTableWeek());
+      }
+
+      if (comboValue.equals("Maandelijks")) {
+        vboxTable.getChildren().add(this.customer.getTableMonth());
+      }
+
+      if (comboValue.equals("Jaarlijks")) {
+        vboxTable.getChildren().add(this.customer.getTableYear());
+      }
+    });
 
     return vBox;
   }
