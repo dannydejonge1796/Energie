@@ -123,25 +123,14 @@ public class Dashboard {
     vBox.getChildren().add(comboPeriod);
 
     VBox vboxTable = new VBox();
-    vboxTable.getChildren().add(this.customer.getTableWeek());
+    vboxTable.getChildren().add(this.customer.getOverview(comboPeriod.getValue()));
 
     vBox.getChildren().add(vboxTable);
 
     comboPeriod.setOnAction(e -> {
       String comboValue = comboPeriod.getValue();
       vboxTable.getChildren().clear();
-
-      if (comboValue.equals("Wekelijks")) {
-        vboxTable.getChildren().add(this.customer.getTableWeek());
-      }
-
-      if (comboValue.equals("Maandelijks")) {
-        vboxTable.getChildren().add(this.customer.getTableMonth());
-      }
-
-      if (comboValue.equals("Jaarlijks")) {
-        vboxTable.getChildren().add(this.customer.getTableYear());
-      }
+      vboxTable.getChildren().add(this.customer.getOverview(comboValue));
     });
 
     return vBox;

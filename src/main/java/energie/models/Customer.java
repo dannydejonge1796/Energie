@@ -32,9 +32,27 @@ public class Customer {
     initWeeklyUsage();
   }
 
-  public TableView<ObservableList<String>> getTableWeek()
+  public TableView<ObservableList<String>> getOverview(String selectedPeriod)
   {
-    int weeksInYear = 52;
+    int divideAdvance = 0;
+    String groupString = "";
+    if (selectedPeriod.equals("Wekelijks")) {
+      //Haal het resultaat op per week
+      divideAdvance = 52;
+      groupString = "GROUP BY WEEK(weekly_usage.date_start) ";
+    }
+
+    if (selectedPeriod.equals("Maandelijks")) {
+      //Haal het resultaat op per maand
+      divideAdvance = 12;
+      groupString = "GROUP BY MONTH(weekly_usage.date_start) ";
+    }
+
+    if (selectedPeriod.equals("Jaarlijks")) {
+      //Haal het resultaat op per jaar
+      divideAdvance = 1;
+      groupString = "GROUP BY YEAR(weekly_usage.date_start) ";
+    }
 
     String query =
     "SELECT " +
@@ -54,12 +72,12 @@ public class Customer {
     "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
     //Kolom totale kosten
     "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-    //Kolom voorschot / bepaald tijdsbestek
-    "ROUND(customer.advance / "+weeksInYear+", 2) as Average_advance, " +
+    //Kolom voorschot / bepaalde periode
+    "ROUND(customer.advance / "+divideAdvance+", 2) as Average_advance, " +
     //Kolom overschrijding, voorschot - totale kosten
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - (customer.advance / "+weeksInYear+"), 2) as Exceedance " +
+    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - (customer.advance / "+divideAdvance+"), 2) as Exceedance " +
     //Van tabel (wekelijks)gebruik met joins (rates tabellen en customer tabel)
-    //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
+    //Gebruik left join zodat de weekly usage wordt weergegeven als rate of advance niet bestaat
     "FROM weekly_usage " +
     //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
     "LEFT JOIN electricity_rate " +
@@ -86,138 +104,11 @@ public class Customer {
     "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
     //Geen resultaten ophalen die in de toekomst liggen
     "AND weekly_usage.date_end <= CURRENT_DATE " +
-    //Haal het resultaat op per maand
-    "GROUP BY WEEK(weekly_usage.date_start) " +
+    //Haal het resultaat op per bepaalde periode
+    groupString +
     //Sort by most recent start date
     "ORDER BY MIN(weekly_usage.date_start) DESC";
 
-    return createTableView(query);
-  }
-
-  public TableView<ObservableList<String>> getTableMonth()
-  {
-    int monthsInYear = 12;
-
-    String query =
-    "SELECT " +
-    //Kolom periode
-    "CONCAT(MIN(weekly_usage.date_start), ' - ', MAX(weekly_usage.date_end)) as Period, " +
-    //Kolom elek verbruik
-    "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
-    //Kolom gas verbruik
-    "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
-    //Kolom gemiddelde elek tarief
-    "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
-    //Kolom gemiddelde gas tarief
-    "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
-    //Kolom totale elek kosten, de som van verbruik * tarief
-    "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
-    //Kolom totale gas kosten, de som van verbruik * tarief
-    "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
-    //Kolom totale kosten
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-    //Kolom voorschot / bepaald tijdsbestek
-    "ROUND(customer.advance / "+monthsInYear+", 2) as Average_advance, " +
-    //Kolom overschrijding, voorschot - totale kosten
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - (customer.advance / "+monthsInYear+"), 2) as Exceedance " +
-    //Van tabel (wekelijks)gebruik met joins (rates tabellen en customer tabel)
-    //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
-    "FROM weekly_usage " +
-    //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
-    "LEFT JOIN electricity_rate " +
-    "ON electricity_rate.id = (SELECT MAX(id) " +
-    "FROM electricity_rate er " +
-    "WHERE er.date_from <= weekly_usage.date_start " +
-    "AND er.date_to >= weekly_usage.date_end " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
-    "OR (er.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
-    "AND er.date_from <= weekly_usage.date_start) " +
-    //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
-    "LEFT JOIN gas_rate " +
-    "ON gas_rate.id = (SELECT MAX(id) " +
-    "FROM gas_rate gr " +
-    "WHERE (gr.date_from <= weekly_usage.date_start " +
-    "AND gr.date_to >= weekly_usage.date_end) " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
-    "OR (gr.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
-    "AND gr.date_from <= weekly_usage.date_start) " +
-    //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
-    "LEFT JOIN customer " +
-    "ON weekly_usage.customer_number = customer.number " +
-    //Alleen resultaten ophalen van deze customer
-    "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
-    //Geen resultaten ophalen die in de toekomst liggen
-    "AND weekly_usage.date_end <= CURRENT_DATE " +
-    //Haal het resultaat op per maand
-    "GROUP BY MONTH(weekly_usage.date_start) " +
-    //Sort by most recent start date
-    "ORDER BY MIN(weekly_usage.date_start) DESC";
-
-    return createTableView(query);
-  }
-
-  public TableView<ObservableList<String>> getTableYear()
-  {
-    String query =
-    "SELECT " +
-    //Kolom periode
-    "CONCAT(MIN(weekly_usage.date_start), ' - ', MAX(weekly_usage.date_end)) as Period, " +
-    //Kolom elek verbruik
-    "SUM(weekly_usage.usage_elec) as Total_elec_usage, " +
-    //Kolom gas verbruik
-    "SUM(weekly_usage.usage_gas) as Total_gas_usage, " +
-    //Kolom gemiddelde elek tarief
-    "ROUND(AVG(electricity_rate.rate), 2) as Average_elec_rate, " +
-    //Kolom gemiddelde gas tarief
-    "ROUND(AVG(gas_rate.rate), 2) as Average_gas_rate, " +
-    //Kolom totale elek kosten, de som van verbruik * tarief
-    "ROUND(SUM(weekly_usage.usage_elec * electricity_rate.rate), 2) as Total_elec_cost, " +
-    //Kolom totale gas kosten, de som van verbruik * tarief
-    "ROUND(SUM(weekly_usage.usage_gas * gas_rate.rate), 2) as Total_gas_cost, " +
-    //Kolom totale kosten
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)), 2) as Total_cost, " +
-    //Kolom voorschot / bepaald tijdsbestek
-    "customer.advance as Average_advance, " +
-    //Kolom overschrijding, voorschot - totale kosten
-    "ROUND((SUM(weekly_usage.usage_elec * electricity_rate.rate) + SUM(weekly_usage.usage_gas * gas_rate.rate)) - customer.advance, 2) as Exceedance " +
-    //Van tabel (wekelijks)gebruik met joins (rates tabellen en customer tabel)
-    //Gebruik left join zodat de weekly usage nogsteeds wordt weergegeven als rate of advance niet bestaat
-    "FROM weekly_usage " +
-    //Join elektarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
-    "LEFT JOIN electricity_rate " +
-    "ON electricity_rate.id = (SELECT MAX(id) " +
-    "FROM electricity_rate er " +
-    "WHERE er.date_from <= weekly_usage.date_start " +
-    "AND er.date_to >= weekly_usage.date_end " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
-    "OR (er.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
-    "AND er.date_from <= weekly_usage.date_start) " +
-    //Join gastarief als de periode van het (wekelijks)gebruik binnen de periode van het tarief valt, als er meerdere zijn geef de laatst toegevoegde
-    "LEFT JOIN gas_rate " +
-    "ON gas_rate.id = (SELECT MAX(id) " +
-    "FROM gas_rate gr " +
-    "WHERE (gr.date_from <= weekly_usage.date_start " +
-    "AND gr.date_to >= weekly_usage.date_end) " +
-    //Als het tarief veranderd midden in de periode van een gebruiksperiode dan geldt het oude tarief voor die periode
-    "OR (gr.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
-    "AND gr.date_from <= weekly_usage.date_start) " +
-    //Join customer als het customer nummer gelijk is aan het customer nummer van het (wekelijks)gebruik
-    "LEFT JOIN customer " +
-    "ON weekly_usage.customer_number = customer.number " +
-    //Alleen resultaten ophalen van deze customer
-    "WHERE weekly_usage.customer_number = '" + customerNr + "' " +
-    //Geen resultaten ophalen die in de toekomst liggen
-    "AND weekly_usage.date_end <= CURRENT_DATE " +
-    //Haal het resultaat op per maand
-    "GROUP BY YEAR(weekly_usage.date_start) " +
-    //Sort by most recent start date
-    "ORDER BY MIN(weekly_usage.date_start) DESC";
-
-    return createTableView(query);
-  }
-
-  private TableView<ObservableList<String>> createTableView(String query)
-  {
     TableView<ObservableList<String>> tableView = new TableView<>();
     tableView.setEditable(true);
 
