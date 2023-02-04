@@ -344,6 +344,11 @@ public class Dashboard {
         }
       }
 
+      if (dateTo.isBefore(dateFrom) || dateTo.isEqual(dateFrom)) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Datum tot is eerder of gelijk aan startdatum!");
+        return;
+      }
+
       ElectricityRate electricityRate = new ElectricityRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
       electricityRate.store();
       customer.addToElectricityRates(electricityRate);
@@ -458,6 +463,11 @@ public class Dashboard {
           showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
           return;
         }
+      }
+
+      if (dateTo.isBefore(dateFrom) || dateTo.isEqual(dateFrom)) {
+        showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Datum tot is eerder of gelijk aan startdatum!");
+        return;
       }
 
       GasRate gasRate = new GasRate(this.customer.getCustomerNr(), Double.parseDouble(rate), dateFrom, dateTo);
