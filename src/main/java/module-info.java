@@ -1,8 +1,10 @@
-module com.example.energie {
+module energie {
   requires javafx.controls;
   requires javafx.fxml;
+  requires java.sql;
 
-
-  opens com.example.energie to javafx.fxml;
-  exports com.example.energie;
+  opens energie to javafx.fxml;
+  exports energie;
+  exports energie.models;
+  opens energie.models to javafx.fxml;
 }
