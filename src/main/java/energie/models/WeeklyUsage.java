@@ -23,17 +23,21 @@ public class WeeklyUsage {
 
   public void destroy()
   {
-    String query = "DELETE FROM weekly_usage WHERE date_start = '" + this.dateStart + "' " +
+    //Query voor het verwijderen van een wekelijks gebruik uit de database
+    String query = "DELETE FROM weekly_usage WHERE customer_number = '" + customerNr + "' " +
+            "AND date_start = '" + this.dateStart + "' " +
             "AND date_end = '" + this.dateEnd + "'";
+    //Roep de store functie aan in de database class
     Application.db.storeData(query);
   }
 
   public void store()
   {
+    //Query voor het opslaan van een wekelijks gebruik
     String query =
       "INSERT INTO weekly_usage (customer_number, usage_elec, usage_gas, date_start, date_end) " +
       "VALUES ('" + customerNr + "', '" + usageElec + "', '" + usageGas + "', '" + dateStart + "', '" + dateEnd + "')";
-
+    //Roep de store functie aan in de database class
     Application.db.storeData(query);
   }
 

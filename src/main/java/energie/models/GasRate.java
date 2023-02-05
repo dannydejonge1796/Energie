@@ -21,17 +21,20 @@ public class GasRate {
 
   public void destroy()
   {
+    //Query voor het verwijderen van een gastarief uit de database
     String query = "DELETE FROM gas_rate WHERE date_from = '" + this.dateFrom + "' " +
             "AND date_to = '" + this.dateTo + "'";
+    //Roep de store functie aan van de database class
     Application.db.storeData(query);
   }
 
   public void store()
   {
+    //Query voor het opslaan van een gastarief in de database
     String query =
             "INSERT INTO gas_rate (customer_number, rate, date_from, date_to) " +
             "VALUES ('" + customerNr + "', '" + rate + "', '" + dateFrom + "', '" + dateTo + "')";
-
+    //Roep de store functie aan van de database class
     Application.db.storeData(query);
   }
 

@@ -9,15 +9,17 @@ public class CustomerRegister {
 
   public Customer getCustomer(String customerNumber)
   {
+    //Query om een customer op te halen op basis van het customer nummer
     String query =
             "SELECT * " +
             "FROM customer " +
             "WHERE number = '" + customerNumber + "' " +
             "LIMIT 1";
-
+    //Haal de resultaten uit de database
     ResultSet result = Application.db.getData(query);
 
     try {
+      //Als er een customer is gevonden, return een nieuwe instantie van customer
       if (result.next()) {
         return new Customer(
                 result.getString("number"),

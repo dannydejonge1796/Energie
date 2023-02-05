@@ -21,17 +21,22 @@ public class ElectricityRate {
 
   public void destroy()
   {
-    String query = "DELETE FROM electricity_rate WHERE date_from = '" + this.dateFrom + "' " +
+    //Query voor het verwijderen van een stroomtarief uit de database
+    String query = "DELETE FROM electricity_rate WHERE customer_number = '" + customerNr + "' " +
+            "AND date_from = '" + this.dateFrom + "' " +
             "AND date_to = '" + this.dateTo + "'";
+    //Roep de store functie aan van de database class
     Application.db.storeData(query);
   }
 
   public void store()
   {
+    //Query voor het opslaan van een stroomtarief in de database
     String query =
             "INSERT INTO electricity_rate (customer_number, rate, date_from, date_to) " +
             "VALUES ('" + customerNr + "', '" + rate + "', '" + dateFrom + "', '" + dateTo + "')";
 
+    //Roep de store functie aan van de database class
     Application.db.storeData(query);
   }
 
