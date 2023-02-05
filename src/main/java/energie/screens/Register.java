@@ -39,7 +39,7 @@ public class Register {
     this.registerScene = new Scene(border,640, 360);
   }
 
-  public GridPane createRegFormPane()
+  private GridPane createRegFormPane()
   {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
@@ -131,12 +131,18 @@ public class Register {
     return grid;
   }
 
-  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+  private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    //Nieuwe alert aanmaken
     Alert alert = new Alert(alertType);
+    //Titel instellen
     alert.setTitle(title);
+    //Header instellen
     alert.setHeaderText(null);
+    //Gewenste bericht instellen
     alert.setContentText(message);
+    //Instellen bij welke window de alert hoort
     alert.initOwner(owner);
+    //Weergeef functie
     alert.show();
   }
 

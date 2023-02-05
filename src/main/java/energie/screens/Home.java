@@ -38,7 +38,7 @@ public class Home {
     this.homeScene = new Scene(border,640, 360);
   }
 
-  public GridPane addHomePane()
+  private GridPane addHomePane()
   {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
@@ -90,12 +90,18 @@ public class Home {
     return grid;
   }
 
-  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+  private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    //Nieuwe alert aanmaken
     Alert alert = new Alert(alertType);
+    //Titel instellen
     alert.setTitle(title);
+    //Header instellen
     alert.setHeaderText(null);
+    //Gewenste bericht instellen
     alert.setContentText(message);
+    //Instellen bij welke window de alert hoort
     alert.initOwner(owner);
+    //Weergeef functie
     alert.show();
   }
 

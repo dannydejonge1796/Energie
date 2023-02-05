@@ -89,7 +89,7 @@ public class Dashboard {
     this.dashboardScene = new Scene(tabPane, 760, 480);
   }
 
-  public VBox addDashboardPane()
+  private VBox addDashboardPane()
   {
     //VBox aanmaken met padding en spacing
     VBox vBox = new VBox();
@@ -146,7 +146,7 @@ public class Dashboard {
     return vBox;
   }
 
-  public GridPane addUsagePane()
+  private GridPane addUsagePane()
   {
     //Gridpane aanmaken met padding en spacing
     GridPane grid = new GridPane();
@@ -265,7 +265,7 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addElecRatePane()
+  private GridPane addElecRatePane()
   {
     //Grid aanmaken met spacing en padding
     GridPane grid = new GridPane();
@@ -396,7 +396,7 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addGasRatePane()
+  private GridPane addGasRatePane()
   {
     //Grid aanmaken met spacing en padding
     GridPane grid = new GridPane();
@@ -527,7 +527,7 @@ public class Dashboard {
     return grid;
   }
 
-  public GridPane addAdvancePane()
+  private GridPane addAdvancePane()
   {
     //Gridpane aanmaken met padding en spacing
     GridPane grid = new GridPane();
@@ -581,7 +581,7 @@ public class Dashboard {
     return grid;
   }
 
-  public VBox addVBox()
+  private VBox addVBox()
   {
     //Vbox voor sidemenu aanmaken en toevoegen
     VBox vbox = new VBox();
@@ -618,7 +618,7 @@ public class Dashboard {
     return vbox;
   }
 
-  public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+  private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
     //Nieuwe alert aanmaken
     Alert alert = new Alert(alertType);
     //Titel instellen
@@ -645,7 +645,7 @@ public class Dashboard {
     return df;
   }
 
-  public void determineNotifications()
+  private void determineNotifications()
   {
     //Voorschot ophalen uit customer
     Double advance = customer.getAdvance();
