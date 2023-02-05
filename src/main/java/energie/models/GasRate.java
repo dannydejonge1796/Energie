@@ -22,7 +22,8 @@ public class GasRate {
   public void destroy()
   {
     //Query voor het verwijderen van een gastarief uit de database
-    String query = "DELETE FROM gas_rate WHERE date_from = '" + this.dateFrom + "' " +
+    String query = "DELETE FROM gas_rate WHERE customer_number = '" + customerNr + "' " +
+            "AND date_from = '" + this.dateFrom + "' " +
             "AND date_to = '" + this.dateTo + "'";
     //Roep de store functie aan van de database class
     Application.db.storeData(query);
