@@ -79,14 +79,12 @@ public class Register {
     GridPane.setMargin(btnBack, new Insets(20, 0,20,0));
 
     btnBack.setOnAction(e -> this.stage.setScene(new Home(this.stage, cR).getHomeScene()));
-
     // Voeg submit knop toe
     Button btnRegister = new Button("Registreer");
     btnRegister.setPrefWidth(100);
     grid.add(btnRegister, 0, 5, 2, 1);
     GridPane.setHalignment(btnRegister, HPos.RIGHT);
     GridPane.setMargin(btnRegister, new Insets(20, 0,20,0));
-
     // Wanneer op knop wordt gedrukt
     btnRegister.setOnAction(e -> {
 

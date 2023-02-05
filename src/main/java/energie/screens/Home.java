@@ -49,48 +49,54 @@ public class Home {
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(25, 100, 25, 100));
-
+    //Tekst invoeren klantnummer aanmaken en toevoegen
     Text txtCustomerNr = new Text("Voer uw klantnummer in:");
     txtCustomerNr.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
     grid.add(txtCustomerNr, 0, 0);
-
+    //Tekstveld voor invoeren van klantnummer aanmaken en toevoegen
     TextField tfCustomerNr = new TextField();
     GridPane.setHgrow(tfCustomerNr, Priority.SOMETIMES);
     grid.add(tfCustomerNr, 0, 2);
-
+    //Button ok aanmaken
     Button btnCustomerNr = new Button("Ok");
-
+    //Als op knop ok wordt geklikt
     btnCustomerNr.setOnAction(e -> {
+      //Haal nummer op uit veld
       String customerNr = tfCustomerNr.getText();
-
+      //Als veld leeg is, foutmelding
       if(customerNr.isEmpty()) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer een klantnummer in!");
         return;
       }
-
+      //Als veld geen nummer is, foutmelding
       if(!customerNr.matches("^[0-9]*$")) {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer is ongeldig!");
         return;
       }
-
+      //Haal customer op uit het customer register
       Customer customer = cR.getCustomer(customerNr);
+      //Als er een customer is met het ingevoerde nummer
       if (customer != null) {
+        //Ga naar het dashboard van de customer
         stage.setScene(new Dashboard(stage, customer).getDashboardScene());
       } else {
+        //Als er geen customer is gevonden, foutmelding
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Het ingevoerde klantnummer bestaat niet!");
       }
     });
-
+    //Ok knop toevoegen
     grid.add(btnCustomerNr, 1, 2);
-
+    //tekst "nog geen klant?" aanmaken en toevoegen
     Text txtExistingCustomer = new Text("Nog geen klant?");
     txtExistingCustomer.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
     grid.add(txtExistingCustomer, 0, 4);
-
+    //Registreerknop aanmaken
     Button btnRegister = new Button("Registreren");
+    //Als er op de registreerknop wordt gedrukt, ga naar het registratieformulier
     btnRegister.setOnAction(e -> stage.setScene(new Register(this.stage, this.cR).getRegisterScene()));
+    //Button toevoegen
     grid.add(btnRegister, 0, 6);
-
+    //Gridpane home teruggeven
     return grid;
   }
 
