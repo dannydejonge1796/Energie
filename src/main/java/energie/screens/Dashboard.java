@@ -248,8 +248,8 @@ public class Dashboard {
           return;
         }
       }
-      //Eind datum is de start datum plus een week
-      LocalDate dateEnd = dateStart.plusWeeks(1);
+      //Eind datum is de start datum plus 6 dagen
+      LocalDate dateEnd = dateStart.plusWeeks(1).minusDays(1);
       //Nieuwe weekly usage instantie aanmaken
       WeeklyUsage weeklyUsage = new WeeklyUsage(this.customer.getCustomerNr(), Integer.parseInt(usageElec), Integer.parseInt(usageGas), dateStart, dateEnd);
       //Roep functie om de weekly usage in de database op te slaan
@@ -311,7 +311,7 @@ public class Dashboard {
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo, 0, 3);
     //Datepicker datum tot aanmaken en toevoegen, standaard waarde is vandaag plus 6 maanden
-    DatePicker dpDateTo =  new DatePicker(LocalDate.now().plusMonths(6));
+    DatePicker dpDateTo =  new DatePicker(LocalDate.now().plusMonths(6).minusDays(1));
     grid.add(dpDateTo, 1, 3);
     //Onbeschikbare datums moeten niet geselecteerd kunnen worden
     dpDateTo.setDayCellFactory(picker -> new DateCell() {
@@ -442,7 +442,7 @@ public class Dashboard {
     Label lblDateTo = new Label("Datum tot:");
     grid.add(lblDateTo,0,3);
     //Datepicker datum tot aanmaken en toevoegen, standaard waarde is vandaag plus 6 maanden
-    DatePicker dpDateTo = new DatePicker(LocalDate.now().plusMonths(6));
+    DatePicker dpDateTo = new DatePicker(LocalDate.now().plusMonths(6).minusDays(1));
     grid.add(dpDateTo,1,3);
     //Onbeschikbare datums moeten niet gesleecteerd kunnen worden
     dpDateTo.setDayCellFactory(picker -> new DateCell() {

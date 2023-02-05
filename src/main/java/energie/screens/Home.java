@@ -25,21 +25,25 @@ public class Home {
 
   public Home(Stage primaryStage, CustomerRegister customerRegister)
   {
+    //Koppel customer register aan c;ass
     this.cR = customerRegister;
-
+    //Stage mag niet in grootte worden veranderd
     primaryStage.setResizable(false);
+    //Titel van stage instellen
     primaryStage.setTitle("Energie - klantnummer invoeren");
-
+    //Koppel stage aan class
     this.stage = primaryStage;
-
+    //Borderpane aanmaken
     BorderPane border = new BorderPane();
+    //Homepane in de center zetten
     border.setCenter(addHomePane());
-
+    //Home scene koppelen aan de class
     this.homeScene = new Scene(border,640, 360);
   }
 
   private GridPane addHomePane()
   {
+    //Gridpane aanmaken met padding en spacing, content centreren
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
