@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Customer {
 
@@ -113,110 +114,43 @@ public class Customer {
     return table;
   }
 
-  public TableView<ElectricityRate> getTableElec()
+  public <T extends Rate> TableView<T> getRateTable(List<T> rates)
   {
     //Maak een nieuwe tabel voor stroomtarief
-    TableView<ElectricityRate> table = new TableView<>();
+    TableView<T> table = new TableView<>();
     //Vul de tabel met items uit de lijst met stroomtarieven
-    table.setItems(FXCollections.observableArrayList(this.electricityRates));
+    table.setItems(FXCollections.observableArrayList(rates));
 
     //Maak kolommen aan voor alle properties
     //Vul de kolommen met de waarden uit de properties
-    TableColumn<ElectricityRate, String> colRate = new TableColumn<>("Stroom tarief");
+    TableColumn<T, String> colRate = new TableColumn<>("Rate");
     colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
 
-    TableColumn<ElectricityRate, String> colDateFrom = new TableColumn<>("Datum vanaf");
+    TableColumn<T, String> colDateFrom = new TableColumn<>("Date From");
     colDateFrom.setCellValueFactory(new PropertyValueFactory<>("dateFrom"));
 
-    TableColumn<ElectricityRate, String> colDateTo = new TableColumn<>("Datum tot");
+    TableColumn<T, String> colDateTo = new TableColumn<>("Date To");
     colDateTo.setCellValueFactory(new PropertyValueFactory<>("dateTo"));
 
     //Maak een kolom voor deleteknoppen
-    TableColumn<ElectricityRate, Void> deleteCol = new TableColumn<>("Delete");
+    TableColumn<T, Void> deleteCol = new TableColumn<>("Delete");
     //Maak een knop in de cel van de kolom
     deleteCol.setCellFactory(new Callback<>() {
       @Override
-      public TableCell<ElectricityRate, Void> call(final TableColumn<ElectricityRate, Void> param) {
+      public TableCell<T, Void> call(final TableColumn<T, Void> param) {
         return new TableCell<>() {
           private final Button deleteButton = new Button("Delete");
           //Als op de verwijderknop wordt geklikt
           {
             deleteButton.setOnAction((ActionEvent event) -> {
-              //Haal het stroomtarief op uit de tabel
-              ElectricityRate electricityRate = getTableView().getItems().get(getIndex());
-              //Verwijder het stroomtarief uit de database
-              electricityRate.destroy();
-              //Verwijder het stroomtarief uit customer
-              electricityRates.remove(electricityRate);
-              //Verwijder het stroomtarief uit de tabel
-              table.getItems().remove(electricityRate);
-            });
-          }
-
-          @Override
-          //Deze functie houdt de deleteknop kolom up-to-date
-          public void updateItem(Void item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty) {
-              //Als de rij leeg is, verwijder de deleteknop
-              setGraphic(null);
-            } else {
-              //Als de rij niet leeg is, zet dan de deleteknop als het grafische element
-              setGraphic(deleteButton);
-            }
-          }
-        };
-      }
-    });
-    //Voeg alle kolommen toe aan de tabel
-    table.getColumns().add(colRate);
-    table.getColumns().add(colDateFrom);
-    table.getColumns().add(colDateTo);
-    table.getColumns().add(deleteCol);
-    //De kolommen hebben een statische breedte en krijgen dze automatisch
-    table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    table.autosize();
-    //Geef de tabel terug
-    return table;
-  }
-
-  public TableView<GasRate> getTableGas()
-  {
-    //Maak een nieuwe tabel voor gastarief
-    TableView<GasRate> table = new TableView<>();
-    //Vul de tabel met items uit de lijst met gastarieven
-    table.setItems(FXCollections.observableArrayList(this.gasRates));
-
-    //Maak kolommen aan voor alle properties
-    //Vul de kolommen met de waarden uit de properties
-    TableColumn<GasRate, String> colRate = new TableColumn<>("Gas tarief");
-    colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
-
-    TableColumn<GasRate, String> colDateFrom = new TableColumn<>("Datum vanaf");
-    colDateFrom.setCellValueFactory(new PropertyValueFactory<>("dateFrom"));
-
-    TableColumn<GasRate, String> colDateTo = new TableColumn<>("Datum tot");
-    colDateTo.setCellValueFactory(new PropertyValueFactory<>("dateTo"));
-
-    //Maak een kolom voor deleteknoppen
-    TableColumn<GasRate, Void> deleteCol = new TableColumn<>("Delete");
-    //Maak een knop in de cel van de kolom
-    deleteCol.setCellFactory(new Callback<>() {
-      @Override
-      public TableCell<GasRate, Void> call(final TableColumn<GasRate, Void> param) {
-        return new TableCell<>() {
-          private final Button deleteButton = new Button("Delete");
-          //Als op de verwijderknop wordt geklikt
-          {
-            deleteButton.setOnAction((ActionEvent event) -> {
-              //Haal het gastarief op uit de tabel
-              GasRate gasRate = getTableView().getItems().get(getIndex());
-              //Verwijder het gastarief uit de database
-              gasRate.destroy();
-              //Verwijder het gastarief uit de customer
-              gasRates.remove(gasRate);
-              //Verwijder het gastarief uit de tabel
-              table.getItems().remove(gasRate);
+              //Haal het tarief op uit de tabel
+              T rate = getTableView().getItems().get(getIndex());
+              //Verwijder het tarief uit de database
+              rate.destroy();
+              //Verwijder het tarief uit customer
+              rates.remove(rate);
+              //Verwijder het tarief uit de tabel
+              table.getItems().remove(rate);
             });
           }
 

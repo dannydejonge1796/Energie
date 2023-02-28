@@ -333,7 +333,7 @@ public class Dashboard {
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
     //Tabel van stroomtarieven ophalen uit customer en toevoegen
-    grid.add(customer.getTableElec(), 0, 5, 2, 1);
+    grid.add(customer.getRateTable(electricityRates), 0, 5, 2, 1);
     //Als op opslaan wordt gedrukt
     btnSave.setOnAction(e -> {
       //Haal values op uit velden
@@ -464,7 +464,7 @@ public class Dashboard {
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
     //Tabel van gastarieven ophalen uit customer en toevoegen
-    grid.add(customer.getTableGas(), 0, 5, 2, 1);
+    grid.add(customer.getRateTable(gasRates), 0, 5, 2, 1);
     //Als op opslaan wordt gedrukt
     btnSave.setOnAction(e -> {
       //Values uit de velden ophalen

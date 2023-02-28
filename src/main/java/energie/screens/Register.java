@@ -44,7 +44,7 @@ public class Register {
 
   private GridPane createRegFormPane()
   {
-    //Gridpane aanmaken met padding en spacing, content centreren
+    //Grid pane aanmaken met padding en spacing, content centreren
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setPadding(new Insets(40, 100, 40, 100));
@@ -75,9 +75,9 @@ public class Register {
     grid.add(btnBack, 0, 5, 2, 1);
     GridPane.setHalignment(btnBack, HPos.LEFT);
     GridPane.setMargin(btnBack, new Insets(20, 0,20,0));
-    //Als er op knop terug wordt geklikt, herlaad de home scene
+    //Als er op knop terug wordt geklikt, herlaad de home-scene
     btnBack.setOnAction(e -> this.stage.setScene(new Home(this.stage, cR).getHomeScene()));
-    //Registreer knop aanmaken en toevoegen
+    //Registreerknop aanmaken en toevoegen
     Button btnRegister = new Button("Registreer");
     btnRegister.setPrefWidth(100);
     grid.add(btnRegister, 0, 5, 2, 1);
@@ -129,7 +129,7 @@ public class Register {
       //Herlaad home scene
       stage.setScene(new Home(stage, cR).getHomeScene());
     });
-    //Geef gridpane terug
+    //Geef grid pane terug
     return grid;
   }
 
