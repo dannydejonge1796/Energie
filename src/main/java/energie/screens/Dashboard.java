@@ -291,18 +291,21 @@ public class Dashboard {
     DatePicker dpDateFrom = new DatePicker(LocalDate.now());
     grid.add(dpDateFrom, 1, 2);
     //Alle stroomtarieven uit customer halen
-    ArrayList<ElectricityRate> electricityRates = customer.getElectricityRates();
+    ArrayList<Object> rates = customer.getRates();
     //Onbeschikbare datums moeten niet gesleecteerd kunnen worden
     dpDateFrom.setDayCellFactory(picker -> new DateCell() {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
-        //Loop door alle stroomtarieven
-        for (ElectricityRate electricityRate : electricityRates) {
-          //Als een datum binnen de periode van een stroomtarief valt
-          if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
-            //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
-            setDisable(true);
-            break;
+        //Loop door alle rates
+        for (Object rate : rates) {
+          //Als rate van het type electricity rate is
+          if (rate instanceof ElectricityRate electricityRate) {
+            //Als een datum binnen de periode van een stroomtarief valt
+            if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
+              //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
+              setDisable(true);
+              break;
+            }
           }
         }
       }
@@ -317,13 +320,16 @@ public class Dashboard {
     dpDateTo.setDayCellFactory(picker -> new DateCell() {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
-        //Door alle stroomtarieven loop en
-        for (ElectricityRate electricityRate : electricityRates) {
-          //Als een datum binnen de periode van een stroomtarief valt
-          if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
-            //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
-            setDisable(true);
-            break;
+        //Door alle rates loop en
+        for (Object rate : rates) {
+          //Als rate van het type electricity rate is
+          if (rate instanceof ElectricityRate electricityRate) {
+            //Als een datum binnen de periode van een stroomtarief valt
+            if (!date.isBefore(electricityRate.getDateFrom()) && !date.isAfter(electricityRate.getDateTo())) {
+              //Een periode van een elek tarief kan niet opnieuw worden geselecteerd
+              setDisable(true);
+              break;
+            }
           }
         }
       }
@@ -332,6 +338,16 @@ public class Dashboard {
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
+    //Lijst met enkel electricity rates initiëren
+    ArrayList<ElectricityRate> electricityRates = new ArrayList<>();
+    //Door alle rates lopen
+    for (Object rate : rates) {
+      //Als van type electricity rate
+      if (rate instanceof ElectricityRate electricityRate) {
+        //Toevoegen aan array
+        electricityRates.add(electricityRate);
+      }
+    }
     //Tabel van stroomtarieven ophalen uit customer en toevoegen
     grid.add(customer.getRateTable(electricityRates), 0, 5, 2, 1);
     //Als op opslaan wordt gedrukt
@@ -356,11 +372,14 @@ public class Dashboard {
         return;
       }
       //Loop door alle stroomtarieven
-      for (ElectricityRate electricityRate : electricityRates) {
-        //Als er een datum is ingevoerd die in de periode van een al bestaand stroomtarief valt, foutmelding
-        if (!dateFrom.isBefore(electricityRate.getDateFrom()) && !dateFrom.isAfter(electricityRate.getDateTo())) {
-          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
-          return;
+      for (Object it : rates) {
+        //Als rate van type electricity is
+        if (it instanceof ElectricityRate electricityRate) {
+          //Als er een datum is ingevoerd die in de periode van een al bestaand stroomtarief valt, foutmelding
+          if (!dateFrom.isBefore(electricityRate.getDateFrom()) && !dateFrom.isAfter(electricityRate.getDateTo())) {
+            showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
+            return;
+          }
         }
       }
       //Als er geen datum is ingevoerd of iets anders dan een datum, foutmelding
@@ -369,11 +388,14 @@ public class Dashboard {
         return;
       }
       //Loop door alle stroomtarieven
-      for (ElectricityRate electricityRate : electricityRates) {
-        //Als er een datum is ingevoerd die in de periode van een al bestaand stroomtarief valt, foutmelding
-        if (!dateTo.isBefore(electricityRate.getDateFrom()) && !dateTo.isAfter(electricityRate.getDateTo())) {
-          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
-          return;
+      for (Object it : rates) {
+        //Als rate van type electricity is
+        if (it instanceof ElectricityRate electricityRate) {
+          //Als er een datum is ingevoerd die in de periode van een al bestaand stroomtarief valt, foutmelding
+          if (!dateTo.isBefore(electricityRate.getDateFrom()) && !dateTo.isAfter(electricityRate.getDateTo())) {
+            showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een elek tarief ingevoerd op deze datum!");
+            return;
+          }
         }
       }
       //Als ingevoerde datum eerder is of gelijk is aan startdatum, foutmelding
@@ -386,7 +408,7 @@ public class Dashboard {
       //Stroomtarief opslaan in database
       electricityRate.store();
       //Stroomtarief toevoegen aan customer arraylist
-      customer.addToElectricityRates(electricityRate);
+      customer.addToRates(electricityRate);
       //Succes melding
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige stroomtarief is ingesteld!");
       //Ververs dashboard
@@ -421,19 +443,22 @@ public class Dashboard {
     //Datepicker datum vanaf aanmaken een toevoegen, standaard waarde vandaag instellen
     DatePicker dpDateFrom = new DatePicker(LocalDate.now());
     grid.add(dpDateFrom,1,2);
-    //Alle gastarieven uit customer halen
-    ArrayList<GasRate> gasRates = customer.getGasRates();
+    //Alle rates uit customer halen
+    ArrayList<Object> rates = customer.getRates();
     //Onbeschikbare datums moeten niet gesleecteerd kunnen worden
     dpDateFrom.setDayCellFactory(picker -> new DateCell() {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
         //Loop door alle gastarieven
-        for (GasRate gasRate : gasRates) {
-          //Als een datum binnen de periode van een gastarief valt
-          if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
-            //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
-            setDisable(true);
-            break;
+        for (Object rate : rates) {
+          //Als rate van het type gas rate is
+          if (rate instanceof GasRate gasRate) {
+            //Als een datum binnen de periode van een gastarief valt
+            if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
+              //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
+              setDisable(true);
+              break;
+            }
           }
         }
       }
@@ -449,12 +474,15 @@ public class Dashboard {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
         //Loop door alle gastarieven
-        for (GasRate gasRate : gasRates) {
-          //Als een datum binnen de periode van een gastarief valt
-          if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
-            //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
-            setDisable(true);
-            break;
+        for (Object rate : rates) {
+          //Als rate van het type gas rate is
+          if (rate instanceof GasRate gasRate) {
+            //Als een datum binnen de periode van een gastarief valt
+            if (!date.isBefore(gasRate.getDateFrom()) && !date.isAfter(gasRate.getDateTo())) {
+              //Een periode van een gas tarief kan niet opnieuw worden geselecteerd
+              setDisable(true);
+              break;
+            }
           }
         }
       }
@@ -463,6 +491,18 @@ public class Dashboard {
     Button btnSave = new Button("Opslaan");
     GridPane.setHalignment(btnSave, HPos.RIGHT);
     grid.add(btnSave, 1, 4);
+
+    //Lijst met enkel electricity rates initiëren
+    ArrayList<GasRate> gasRates = new ArrayList<>();
+    //Door alle rates lopen
+    for (Object rate : rates) {
+      //Als van type electricity rate
+      if (rate instanceof GasRate gasRate) {
+        //Toevoegen aan array
+        gasRates.add(gasRate);
+      }
+    }
+
     //Tabel van gastarieven ophalen uit customer en toevoegen
     grid.add(customer.getRateTable(gasRates), 0, 5, 2, 1);
     //Als op opslaan wordt gedrukt
@@ -486,12 +526,15 @@ public class Dashboard {
         showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Voer de ingangsdatum van het gastarief in!");
         return;
       }
-      //Loop door alle gastarieven
-      for (GasRate gasRate : gasRates) {
-        //Als er een datum is ingevoerd die in de periode van een al bestaand gastarief valt, foutmelding
-        if (!dateFrom.isBefore(gasRate.getDateFrom()) && !dateFrom.isAfter(gasRate.getDateTo())) {
-          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
-          return;
+      //Loop door alle rates
+      for (Object it : rates) {
+        //Als rate van type gas is
+        if (it instanceof GasRate gasRate) {
+          //Als er een datum is ingevoerd die in de periode van een al bestaand gastarief valt, foutmelding
+          if (!dateFrom.isBefore(gasRate.getDateFrom()) && !dateFrom.isAfter(gasRate.getDateTo())) {
+            showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
+            return;
+          }
         }
       }
       //Als er geen datum is ingevoerd of iets anders dan een datum, foutmelding
@@ -500,11 +543,14 @@ public class Dashboard {
         return;
       }
       //Loop door alle gastarieven
-      for (GasRate gasRate : gasRates) {
-        //Als er een datum is ingevoerd die in de periode van een al bestaand gastarief valt, foutmelding
-        if (!dateTo.isBefore(gasRate.getDateFrom()) && !dateTo.isAfter(gasRate.getDateTo())) {
-          showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
-          return;
+      for (Object it : rates) {
+        //Als rate van type gas is
+        if (it instanceof GasRate gasRate) {
+          //Als er een datum is ingevoerd die in de periode van een al bestaand gastarief valt, foutmelding
+          if (!dateTo.isBefore(gasRate.getDateFrom()) && !dateTo.isAfter(gasRate.getDateTo())) {
+            showAlert(Alert.AlertType.ERROR, grid.getScene().getWindow(), "Error!", "Er is al een gas tarief ingevoerd op deze datum!");
+            return;
+          }
         }
       }
       //Als ingevoerde datum eerder is of gelijk is aan startdatum, foutmelding
@@ -517,7 +563,7 @@ public class Dashboard {
       //Gastarief opslaan in database
       gasRate.store();
       //Gastarief toevoegen aan arraylist in customer
-      customer.addToGasRates(gasRate);
+      customer.addToRates(gasRate);
       //Succes melding
       showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Success!", "Uw huidige gastarief is ingesteld!");
       //Dashboard verversen
@@ -657,7 +703,19 @@ public class Dashboard {
       notifications.add(notification);
     }
     //Als een klant geen stroomtarieven heeft
-    if (customer.getElectricityRates().isEmpty()) {
+
+    boolean emptyElec = true;
+    //Loop door alle rates
+    for (Object rate : customer.getRates()) {
+      //Als er een object van het type electricity tussen zit
+      if (rate instanceof ElectricityRate) {
+        //boolean naar false
+        emptyElec = false;
+        break;
+      }
+    }
+
+    if (emptyElec) {
       //Notificatie aanmaken en toevoegen aan notificaties
       String txtNotification = "U heeft nog geen stroomtarief ingevoerd!";
       Notification notification = new Notification(txtNotification);
@@ -672,8 +730,20 @@ public class Dashboard {
         notifications.add(notification);
       }
     }
+
+    boolean emptyGas = true;
+    //Loop door alle rates
+    for (Object rate : customer.getRates()) {
+      //Als er een object van het type electricity tussen zit
+      if (rate instanceof GasRate) {
+        //boolean naar false
+        emptyGas = false;
+        break;
+      }
+    }
+
     //Als een klant geen gastarieven heeft
-    if (customer.getGasRates().isEmpty()) {
+    if (emptyGas) {
       //Notificatie aanmaken en toevoegen aan notificaties
       String txtNotification = "U heeft nog geen gastarief ingevoerd!";
       Notification notification = new Notification(txtNotification);

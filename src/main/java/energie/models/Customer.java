@@ -25,8 +25,7 @@ public class Customer {
   private final String firstname;
   private final String lastname;
   private Double advance;
-  private ArrayList<ElectricityRate> electricityRates;
-  private ArrayList<GasRate> gasRates;
+  private final ArrayList<Object> rates;
   private ArrayList<WeeklyUsage> weeklyUsages;
 
   public Customer(String customerNr, String firstname, String lastname, Double advance)
@@ -35,6 +34,8 @@ public class Customer {
     this.firstname = firstname;
     this.lastname = lastname;
     this.advance = advance;
+    this.rates = new ArrayList<>();
+
     //Haal alle stroomtarieven van de klant op en stop ze in de arraylist
     initElectricityRates();
     //Haal alle gastarieven van de klant op en stop ze in de arraylist
@@ -368,12 +369,15 @@ public class Customer {
   {
     //Initieer met null als value
     ElectricityRate result = null;
-
-    for (ElectricityRate electricityRate : this.electricityRates) {
-      //Als de huidige datum binnen periode van tarief ligt
-      if (!LocalDate.now().isBefore(electricityRate.getDateFrom()) && !LocalDate.now().isAfter(electricityRate.getDateTo())) {
-        //dan is dat het huidige tarief
-        result = electricityRate;
+    //Door rates heen lopen
+    for (Object rate : this.rates) {
+      //Als de rate van type electricity rate is
+      if (rate instanceof ElectricityRate electricityRate) {
+        //Als de huidige datum binnen periode van tarief ligt
+        if (!LocalDate.now().isBefore(electricityRate.getDateFrom()) && !LocalDate.now().isAfter(electricityRate.getDateTo())) {
+          //dan is dat het huidige tarief
+          result = electricityRate;
+        }
       }
     }
 
@@ -385,12 +389,15 @@ public class Customer {
   {
     //Initieer met null als value
     GasRate result = null;
-
-    for (GasRate gasRate : this.gasRates) {
-      //Als de huidige datum binnen periode van tarief ligt
-      if (!LocalDate.now().isBefore(gasRate.getDateFrom()) && !LocalDate.now().isAfter(gasRate.getDateTo())) {
-        //dan is dat het huidige tarief
-        result = gasRate;
+    //Door alle rates heen lopen
+    for (Object rate : this.rates) {
+      //Als de rate van het type gas rate is
+      if (rate instanceof GasRate gasRate) {
+        //Als de huidige datum binnen periode van tarief ligt
+        if (!LocalDate.now().isBefore(gasRate.getDateFrom()) && !LocalDate.now().isAfter(gasRate.getDateTo())) {
+          //dan is dat het huidige tarief
+          result = gasRate;
+        }
       }
     }
 
@@ -400,8 +407,6 @@ public class Customer {
 
   private void initElectricityRates()
   {
-    //Maak nieuwe arraylist aan
-    this.electricityRates = new ArrayList<>();
     //Stel een decimalformat in
     DecimalFormat decimalFormat = new DecimalFormat("#.##");
     //Query om alle stroomtarieven van een gebruiker op te halen, order datum vanaf meest recent boven
@@ -416,7 +421,7 @@ public class Customer {
     try {
       //Voor elk resultaat, maak nieuwe instantie van stroomtarief en voeg toe aan arraylist
       while (result.next()) {
-        this.electricityRates.add(new ElectricityRate(
+        this.rates.add(new ElectricityRate(
                 result.getString("customer_number"),
                 Double.parseDouble(decimalFormat.format(result.getFloat("rate")).replace(',', '.')),
                 result.getDate("date_from").toLocalDate(),
@@ -430,9 +435,7 @@ public class Customer {
 
   private void initGasRates()
   {
-    //Maak nieuwe arraylist aan
-    this.gasRates = new ArrayList<>();
-    //Stel een decimalformat in
+    //Stel een decimal format in
     DecimalFormat decimalFormat = new DecimalFormat("#.##");
     //Query om alle gastarieven van een gebruiker op te halen, order datum vanaf meest recent boven
     String query =
@@ -446,7 +449,7 @@ public class Customer {
     try {
       //Voor elk resultaat, maak nieuwe instantie van gastarief en voeg toe aan arraylist
       while (result.next()) {
-        this.gasRates.add(new GasRate(
+        this.rates.add(new GasRate(
                 result.getString("customer_number"),
                 Double.parseDouble(decimalFormat.format(result.getFloat("rate")).replace(',', '.')),
                 result.getDate("date_from").toLocalDate(),
@@ -510,14 +513,9 @@ public class Customer {
     Application.db.storeData(query);
   }
 
-  public void addToElectricityRates(ElectricityRate electricityRate) {
+  public void addToRates(Object rate) {
     //Voeg stroomtarief toe aan lijst met stroomtarieven
-    this.electricityRates.add(electricityRate);
-  }
-
-  public void addToGasRates(GasRate gasRate) {
-    //Voeg gastarief toe aan lijst met gastarieven
-    this.gasRates.add(gasRate);
+    this.rates.add(rate);
   }
 
   public void addToWeeklyUsages(WeeklyUsage weeklyUsage) {
@@ -545,12 +543,8 @@ public class Customer {
     return advance;
   }
 
-  public ArrayList<ElectricityRate> getElectricityRates() {
-    return electricityRates;
-  }
-
-  public ArrayList<GasRate> getGasRates() {
-    return gasRates;
+  public ArrayList<Object> getRates() {
+    return rates;
   }
 
   public ArrayList<WeeklyUsage> getWeeklyUsages() {
