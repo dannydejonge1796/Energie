@@ -238,6 +238,7 @@ public class Customer {
     "FROM electricity_rate er " +
     "WHERE er.date_from <= weekly_usage.date_start " +
     "AND er.date_to >= weekly_usage.date_end " +
+    "AND er.customer_number = '" + customerNr + "'" +
     //Als het tarief veranderd midden in de periode van een wekelijks gebruik dan geldt het oude tarief voor die periode
     "OR (er.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
     "AND er.date_from <= weekly_usage.date_start) " +
@@ -247,6 +248,7 @@ public class Customer {
     "FROM gas_rate gr " +
     "WHERE (gr.date_from <= weekly_usage.date_start " +
     "AND gr.date_to >= weekly_usage.date_end) " +
+    "AND gr.customer_number = '" + customerNr + "'" +
     //Als het tarief veranderd midden in de periode van een wekelijks gebruik dan geldt het oude tarief voor die periode
     "OR (gr.date_to BETWEEN weekly_usage.date_start AND weekly_usage.date_end) " +
     "AND gr.date_from <= weekly_usage.date_start) " +
